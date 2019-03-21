@@ -1,0 +1,5 @@
+=======================
+collective.embedcontent
+=======================
+
+User documentation
