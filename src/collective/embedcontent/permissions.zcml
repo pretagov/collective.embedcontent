@@ -6,6 +6,12 @@
   <configure zcml:condition="installed AccessControl.security">
   <!-- -*- extra stuff goes here -*- -->
 
+    <permission
+        id="collective.embedcontent.AddEmdbedView"
+        title="collective.embedcontent: Add EmdbedView"
+    />
+
+
 
   </configure>
 
