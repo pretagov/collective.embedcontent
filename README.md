@@ -1,1 +1,1 @@
-# collective.emebedcontent
+# collective.embedcontent
