@@ -15,8 +15,21 @@ class IEmbedContent(model.Schema):
     )
 
 
-    htnl_content = RichText(
+    html_content = RichText(
         title=(u'HTML Content'),
         description=(u'HTML content'),
+        required=False,
+    )
+
+    storage_folder = schema.Text(
+        title=(u'Storage Folder'),
+        description=(u'Foldr containg contents extracted from zip file'),
+        required=False,
+    )
+
+    index_file = schema.Text(
+        title=(u'Index file'),
+        description=(u'Index file in package content'),
+        default=(u'index.html'),
         required=False,
     )

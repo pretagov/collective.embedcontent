@@ -25,4 +25,30 @@
         template="embedcontentview.pt"
         permission="zope2.View"
         />
+
+  <browser:page
+    for="collective.embedcontent.content.embedcontent.IEmbedContent"
+    name="edit"
+    class="collective.embedcontent.browser.embedcontent.EmbedContentEditForm"
+    permission="cmf.ModifyPortalContent"
+    />
+
+   <adapter
+        for="Products.CMFCore.interfaces.IFolderish
+             plone.dexterity.interfaces.IDexterityFTI"
+        provides="zope.publisher.interfaces.browser.IBrowserPage"
+        factory="collective.embedcontent.browser.embedcontent.EmbedContentAddView"
+        name="EmbedContent"
+        />
+
+  <class class="collective.embedcontent.browser.embedcontent.EmbedContentAddView">
+    <require
+        permission="cmf.AddPortalContent"
+        interface="zope.publisher.interfaces.browser.IBrowserPage"
+        />
+</class>
+
+
+
+
 </configure>
