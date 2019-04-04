@@ -4,7 +4,7 @@
 #
 # Run this robot test stand-alone:
 #
-#  $ bin/test -s collective.embedcontent -t test_emdbed_view.robot --all
+#  $ bin/test -s collective.embedcontent -t test_embed_content.robot --all
 #
 # Run this robot test with robot server (which is faster):
 #
@@ -14,7 +14,7 @@
 #
 # 2) Run robot tests:
 #
-# $ bin/robot /src/collective/embedcontent/tests/robot/test_emdbed_view.robot
+# $ bin/robot /src/collective/embedcontent/tests/robot/test_embed_view.robot
 #
 # See the http://docs.plone.org for further details (search for robot
 # framework).
@@ -34,18 +34,18 @@ Test Teardown  Close all browsers
 
 *** Test Cases ***************************************************************
 
-Scenario: As a site administrator I can add a Emdbed View
+Scenario: As a site administrator I can add a EmbedContent
   Given a logged-in site administrator
-    and an add Emdbed View form
-   When I type 'My Emdbed View' into the title field
+    and an add EmbedContent form
+   When I type 'My EmbedContent' into the title field
     and I submit the form
-   Then a Emdbed View with the title 'My Emdbed View' has been created
+   Then a EmbedContent with the title 'My EmbedContent' has been created
 
-Scenario: As a site administrator I can view a Emdbed View
+Scenario: As a site administrator I can view a EmbedContent
   Given a logged-in site administrator
-    and a Emdbed View 'My Emdbed View'
-   When I go to the Emdbed View view
-   Then I can see the Emdbed View title 'My Emdbed View'
+    and a EmbedContent 'My EmbedContent'
+   When I go to the EmbedContent view
+   Then I can see the EmbedContent title 'My EmbedContent'
 
 
 *** Keywords *****************************************************************
@@ -55,11 +55,11 @@ Scenario: As a site administrator I can view a Emdbed View
 a logged-in site administrator
   Enable autologin as  Site Administrator
 
-an add Emdbed View form
-  Go To  ${PLONE_URL}/++add++Emdbed View
+an add EmbedContent form
+  Go To  ${PLONE_URL}/++add++EmbedContent
 
-a Emdbed View 'My Emdbed View'
-  Create content  type=Emdbed View  id=my-emdbed_view  title=My Emdbed View
+a EmbedContent 'My EmbedContent'
+  Create content  type=EmbedContent  id=my-embed_content  title=My EmbedContent
 
 # --- WHEN -------------------------------------------------------------------
 
@@ -69,18 +69,18 @@ I type '${title}' into the title field
 I submit the form
   Click Button  Save
 
-I go to the Emdbed View view
-  Go To  ${PLONE_URL}/my-emdbed_view
+I go to the EmbedContent view
+  Go To  ${PLONE_URL}/my-embed_content
   Wait until page contains  Site Map
 
 
 # --- THEN -------------------------------------------------------------------
 
-a Emdbed View with the title '${title}' has been created
+a EmbedContent with the title '${title}' has been created
   Wait until page contains  Site Map
   Page should contain  ${title}
   Page should contain  Item created
 
-I can see the Emdbed View title '${title}'
+I can see the EmbedContent title '${title}'
   Wait until page contains  Site Map
   Page should contain  ${title}

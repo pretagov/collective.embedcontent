@@ -7,8 +7,8 @@
   <!-- -*- extra stuff goes here -*- -->
 
     <permission
-        id="collective.embedcontent.AddEmdbedView"
-        title="collective.embedcontent: Add EmdbedView"
+        id="collective.embedcontent.AddEmbedContent"
+        title="collective.embedcontent: Add EmbedContent"
     />
 
 

@@ -3,7 +3,7 @@
   <permissions>
   <!-- -*- extra stuff goes here -*- -->
 
-    <permission name="collective.embedcontent: Add EmdbedView" acquire="True">
+    <permission name="collective.embedcontent: Add EmbedContent" acquire="True">
       <role name="Manager"/>
       <role name="Site Administrator"/>
       <role name="Owner"/>

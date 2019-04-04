@@ -1,19 +1,19 @@
 <?xml version="1.0"?>
 <object xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-    name="Emdbed View"
+    name="EmbedContent"
     meta_type="Dexterity FTI"
     i18n:domain="collective.embedcontent">
 
   <!-- Basic properties -->
   <property
       i18n:translate=""
-      name="title">Emdbed View</property>
+      name="title">EmbedContent</property>
   <property
       i18n:translate=""
       name="description"></property>
 
   <property name="allow_discussion">False</property>
-  <property name="factory">Emdbed View</property>
+  <property name="factory">EmbedContent</property>
   <property name="icon_expr"></property>
   <property name="link_target"></property>
 
@@ -27,11 +27,11 @@
   -->
   </property>
   <!-- Schema, class and security -->
-  <property name="add_permission">collective.embedcontent.AddEmdbedView</property>
+  <property name="add_permission">collective.embedcontent.AddEmbedContent</property>
   <property name="klass">plone.dexterity.content.Container</property>
-  <property name="model_file">collective.embedcontent.content:emdbed_view.xml</property>
   <property name="model_source"></property>
-  <property name="schema"></property>
+  <property name="model_file"></property>
+  <property name="schema">collective.embedcontent.content.embedcontent.IEmbedContent</property>
 
   <!-- Enabled behaviors -->
   <property name="behaviors" purge="false">
@@ -60,7 +60,7 @@
   </property>
 
   <!-- View information -->
-  <property name="add_view_expr">string:${folder_url}/++add++Emdbed View</property>
+  <property name="add_view_expr">string:${folder_url}/++add++EmbedContent</property>
   <property name="default_view">view</property>
   <property name="default_view_fallback">False</property>
   <property name="immediate_view">view</property>

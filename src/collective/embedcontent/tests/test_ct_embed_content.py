@@ -17,7 +17,7 @@ except ImportError:
     from plone.dexterity.utils import portalTypeToSchemaName
 
 
-class EmdbedViewIntegrationTest(unittest.TestCase):
+class EmbedContentIntegrationTest(unittest.TestCase):
 
     layer = COLLECTIVE_EMBEDCONTENT_INTEGRATION_TESTING
 
@@ -26,48 +26,48 @@ class EmdbedViewIntegrationTest(unittest.TestCase):
         self.portal = self.layer['portal']
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
 
-    def test_ct_emdbed_view_schema(self):
-        fti = queryUtility(IDexterityFTI, name='Emdbed View')
+    def test_ct_embed_content_schema(self):
+        fti = queryUtility(IDexterityFTI, name='EmbedContent')
         schema = fti.lookupSchema()
-        schema_name = portalTypeToSchemaName('Emdbed View')
+        schema_name = portalTypeToSchemaName('EmbedContent')
         self.assertEqual(schema_name, schema.getName())
 
-    def test_ct_emdbed_view_fti(self):
-        fti = queryUtility(IDexterityFTI, name='Emdbed View')
+    def test_ct_embed_content_fti(self):
+        fti = queryUtility(IDexterityFTI, name='EmbedContent')
         self.assertTrue(fti)
 
-    def test_ct_emdbed_view_factory(self):
-        fti = queryUtility(IDexterityFTI, name='Emdbed View')
+    def test_ct_embed_content_factory(self):
+        fti = queryUtility(IDexterityFTI, name='EmbedContent')
         factory = fti.factory
         obj = createObject(factory)
 
 
-    def test_ct_emdbed_view_adding(self):
+    def test_ct_embed_view_adding(self):
         setRoles(self.portal, TEST_USER_ID, ['Contributor'])
         obj = api.content.create(
             container=self.portal,
-            type='Emdbed View',
-            id='emdbed_view',
+            type='EmbedContent',
+            id='embed_view',
         )
 
 
-    def test_ct_emdbed_view_globally_addable(self):
+    def test_ct_embed_content_globally_addable(self):
         setRoles(self.portal, TEST_USER_ID, ['Contributor'])
-        fti = queryUtility(IDexterityFTI, name='Emdbed View')
+        fti = queryUtility(IDexterityFTI, name='EmbedContent')
         self.assertTrue(
             fti.global_allow,
             u'{0} is not globally addable!'.format(fti.id)
         )
 
-    def test_ct_emdbed_view_filter_content_type_false(self):
+    def test_ct_embed_content_filter_content_type_false(self):
         setRoles(self.portal, TEST_USER_ID, ['Contributor'])
-        fti = queryUtility(IDexterityFTI, name='Emdbed View')
+        fti = queryUtility(IDexterityFTI, name='EmbedContent')
         portal_types = self.portal.portal_types
         parent_id = portal_types.constructContent(
             fti.id,
             self.portal,
-            'emdbed_view_id',
-            title='Emdbed View container',
+            'embed_content_id',
+            title='EmbedContent container',
          )
         self.parent = self.portal[parent_id]
         obj = api.content.create(

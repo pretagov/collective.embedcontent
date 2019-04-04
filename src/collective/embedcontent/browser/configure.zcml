@@ -18,4 +18,11 @@
       directory="static"
       />
 
+  <browser:page
+        name="view"
+        for="collective.embedcontent.content.embedcontent.IEmbedContent"
+        class="collective.embedcontent.browser.embedcontent.EmbedContentView"
+        template="embedcontentview.pt"
+        permission="zope2.View"
+        />
 </configure>
