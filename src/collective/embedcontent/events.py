@@ -20,6 +20,8 @@ def afterContentModified(obj, event):
     setattr(obj, 'modified_in_progress',True)
     if obj.package_content:
         new_hash = hash(obj.package_content)
+        print 'Old hash %s' % obj.package_signature
+        print 'New hash %s' % new_hash
         if new_hash == obj.package_signature:
             return
         obj.manage_delObjects(obj.package_signature)
@@ -48,7 +50,6 @@ def extract_package_content(root_folder, zip_blob):
             parent_folder = parent_folders[parent_folder_name] if parent_folder_name else root_folder
             manage_addCMFBTreeFolder(parent_folder, foldername)
             parent_folders[path] = getattr(parent_folder, foldername)
-            print 'Create folder %s ' % foldername
         else:
             # create file
             filename = path.split(os.sep)[-1]
@@ -61,5 +62,4 @@ def extract_package_content(root_folder, zip_blob):
             file_obj.close()
             blob.setFilename(filename)
             parent_folder._setObject(filename, blob)
-            print 'Create filename %s ' % filename
 
