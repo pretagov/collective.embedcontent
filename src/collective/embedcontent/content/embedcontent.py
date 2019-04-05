@@ -21,9 +21,9 @@ class IEmbedContent(model.Schema):
         required=False,
     )
 
-    storage_folder = schema.Text(
-        title=(u'Storage Folder'),
-        description=(u'Foldr containg contents extracted from zip file'),
+    package_signature = schema.Text(
+        title=(u'Package signature'),
+        description=(u'Hash value of package content'),
         required=False,
     )
 

@@ -12,16 +12,24 @@ class EmbedContentEditForm(DefaultEditForm):
 
     def updateWidgets(self):
         super(DefaultEditForm, self).updateWidgets()
-        self.widgets['storage_folder'].mode = interfaces.HIDDEN_MODE
+        self.widgets['package_signature'].mode = interfaces.HIDDEN_MODE
 
 
 
 class EmbedContentAddForm(DefaultAddForm):
     portal_type = 'EmbedContent'
 
+    def update(self):
+        DefaultAddForm.update(self)
+        import pdb
+        pdb.set_trace()
+
     def updateWidgets(self):
-        super(DefaultAddForm, self).updateWidgets()
-        self.widgets['storage_folder'].mode = interfaces.HIDDEN_MODE
+        """ """
+        DefaultAddForm.updateWidgets(self)
+        import pdb
+        pdb.set_trace()
+
 
 
 class EmbedContentAddView(DefaultAddView):
