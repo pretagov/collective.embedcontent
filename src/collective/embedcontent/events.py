@@ -1,23 +1,19 @@
 # -*- coding: utf-8 -*-
-
+from plone.app.blob.field import BlobWrapper
 from Products.CMFCore.CMFBTreeFolder import manage_addCMFBTreeFolder
 from zipfile import  ZipFile
 import os
 import io
 
 def afterContentCreated(obj, event):
-    #manage_addCMFBTreeFolder(obj, id='plomino_documents')
-    #for i in ['resources', 'scripts']:
-    #    manage_addCMFBTreeFolder(obj, id=i)
     if obj.package_content:
         content_hash = hash(obj.package_content)
-        obj.package_signature = content_hash
-        root_folder = manage_addCMFBTreeFolder(obj, content_hash)
+        obj.package_signature = str(content_hash)
+        manage_addCMFBTreeFolder(obj, str(content_hash))
+        root_folder = getattr(obj, str(content_hash))
         extract_package_content(root_folder, obj.package_content)
 
 def afterContentModified(obj, event):
-    """
-    """
     # Prevent looping while modifying object in this event
     if getattr(obj,'modified_in_progress',False):
         return
@@ -27,22 +23,39 @@ def afterContentModified(obj, event):
         if new_hash == obj.package_signature:
             return
         obj.manage_delObjects(obj.package_signature)
-        obj.package_signature = new_hash
-        root_folder = manage_addCMFBTreeFolder(obj, new_hash)
+        obj.package_signature = str(new_hash)
+        manage_addCMFBTreeFolder(obj, str(new_hash))
+        root_folder = getattr(obj, str(new_hash))
         extract_package_content(root_folder, obj.package_content)
     setattr(obj, 'modified_in_progress', False)
 
 def extract_package_content(root_folder, zip_blob):
+    """
+        Extract package content into ZOB Tree
+    """
     zipfile = ZipFile(zip_blob.open('r'))
+    parent_folders = {}
     import pdb
     pdb.set_trace()
-    for f in zipfile.namelist():
-        # get directory name from file
-        dirname = os.path.splitext(f)[0]
-        # create new directory
-        print 'Make dir %s' % dirname
-        # read inner zip file into bytes buffer
-        content = io.BytesIO(zipfile.read(f))
-        zip_file = ZipFile(content)
-        for i in zip_file.namelist():
-            print 'Extract %s' % i
+    for path in sorted(zipfile.namelist()):
+        if path.endswith('/'):
+            # create directory
+            foldername = path.split(os.sep)[-2]
+            parent_folder_name = '/'.join(path.split(os.sep)[:-2])
+            parent_folder = parent_folders[parent_folder_name] if parent_folder_name else root_folder
+            parent_folders['/'.join(path.split(os.sep))] = manage_addCMFBTreeFolder(parent_folder, filename.split(os.sep)[-1])
+            print 'Create folder %s ' % foldername
+        else:
+            # create file
+            filename = path.split(os.sep)[-1]
+            parent_folder_name = '/'.join(path.split(os.sep)[:-1])
+            parent_folder = parent_folders[parent_folder_name] if parent_folder_name else root_folder
+            data = zipfile.read(path)
+            blob = BlobWrapper('application/octet-stream')
+            file_obj = blob.getBlob().open('w')
+            file_obj.write(data)
+            file_obj.close()
+            blob.setFilename(filename)
+            parent_folder._setObject(filename, blob)
+            print 'Create filename %s ' % filename
+
