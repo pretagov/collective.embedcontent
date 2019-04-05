@@ -14,7 +14,8 @@ class EmbedContentEditForm(DefaultEditForm):
         super(DefaultEditForm, self).updateWidgets()
         self.widgets['package_signature'].mode = interfaces.HIDDEN_MODE
 
-
+    def package_url(self):
+        return '%s/%s/%s' % (self.context.absolute_url(), self.package_signature, self.index_file)
 
 class EmbedContentAddForm(DefaultAddForm):
     portal_type = 'EmbedContent'

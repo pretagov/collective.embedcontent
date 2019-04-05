@@ -35,15 +35,19 @@ def extract_package_content(root_folder, zip_blob):
     """
     zipfile = ZipFile(zip_blob.open('r'))
     parent_folders = {}
-    import pdb
-    pdb.set_trace()
     for path in sorted(zipfile.namelist()):
+        #skip path if it starts with underscore
+        if path.startswith('_'):
+            #TODO: replace underscoe in path and it HTML source if possible
+            continue
         if path.endswith('/'):
             # create directory
-            foldername = path.split(os.sep)[-2]
-            parent_folder_name = '/'.join(path.split(os.sep)[:-2])
+            path = path[:-1]
+            foldername = path.split(os.sep)[-1]
+            parent_folder_name = '/'.join(path.split(os.sep)[:-1])
             parent_folder = parent_folders[parent_folder_name] if parent_folder_name else root_folder
-            parent_folders['/'.join(path.split(os.sep))] = manage_addCMFBTreeFolder(parent_folder, filename.split(os.sep)[-1])
+            manage_addCMFBTreeFolder(parent_folder, foldername)
+            parent_folders[path] = getattr(parent_folder, foldername)
             print 'Create folder %s ' % foldername
         else:
             # create file
