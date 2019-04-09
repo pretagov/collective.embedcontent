@@ -2,6 +2,7 @@
 from plone.app.blob.field import BlobWrapper
 from Products.CMFCore.CMFBTreeFolder import manage_addCMFBTreeFolder
 from zipfile import  ZipFile
+from plone.namedfile.utils import get_contenttype
 import os
 import io
 
@@ -40,7 +41,7 @@ def extract_package_content(root_folder, zip_blob):
     for path in sorted(zipfile.namelist()):
         #skip path if it starts with underscore
         if path.startswith('_'):
-            #TODO: replace underscoe in path and it HTML source if possible
+            #TODO: replace underscoe in path and HTML source if possible
             continue
         if path.endswith('/'):
             # create directory
@@ -56,7 +57,8 @@ def extract_package_content(root_folder, zip_blob):
             parent_folder_name = '/'.join(path.split(os.sep)[:-1])
             parent_folder = parent_folders[parent_folder_name] if parent_folder_name else root_folder
             data = zipfile.read(path)
-            blob = BlobWrapper('application/octet-stream')
+            print get_contenttype(filename=filename)
+            blob = BlobWrapper(get_contenttype(filename=filename))
             file_obj = blob.getBlob().open('w')
             file_obj.write(data)
             file_obj.close()

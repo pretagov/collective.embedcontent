@@ -3,12 +3,41 @@ from plone.dexterity.browser.view import DefaultView
 from plone.dexterity.browser.edit import DefaultEditForm
 from plone.dexterity.browser.add import DefaultAddForm, DefaultAddView
 from z3c.form import interfaces
+from zope.interface import implements, Interface
+from zope.publisher.interfaces import IPublishTraverse
+from zope import component
+from Products.Five import BrowserView
+from Products.CMFCore.utils import getToolByName
 
 class EmbedContentView(DefaultView):
 
     def package_url(self):
-        return '%s/%s/%s' % (self.context.absolute_url(), self.context.package_signature, self.context.index_file)
+        return '%s/@@contents/%s' % (self.context.absolute_url(), self.context.index_file)
 
+
+class EmbedContentContentView(DefaultView):
+    """ @@contents browser view to access zipfile's contents
+        """
+    implements(IPublishTraverse)
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+
+    def __call__(self):
+        """ This view has no template yet for non-traversing requests """
+        pass
+
+    def publishTraverse(self, request, name):
+        path = name.split('/')
+        obj = getattr(self.context, self.context.package_signature)
+        for element in path:
+            try:
+                obj = obj[element]
+            except Exception:
+                return None
+        return obj
 
 class EmbedContentEditForm(DefaultEditForm):
 
@@ -23,14 +52,11 @@ class EmbedContentAddForm(DefaultAddForm):
 
     def update(self):
         DefaultAddForm.update(self)
-        import pdb
-        pdb.set_trace()
 
     def updateWidgets(self):
         """ """
         DefaultAddForm.updateWidgets(self)
-        import pdb
-        pdb.set_trace()
+
 
 
 

@@ -26,6 +26,13 @@
         permission="zope2.View"
         />
 
+   <browser:page
+      for="collective.embedcontent.content.embedcontent.IEmbedContent"
+      class="collective.embedcontent.browser.embedcontent.EmbedContentContentView"
+      name="contents"
+      permission="zope.Public"
+      />
+
   <browser:page
     for="collective.embedcontent.content.embedcontent.IEmbedContent"
     name="edit"
