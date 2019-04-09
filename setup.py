@@ -44,6 +44,7 @@ setup(
         # -*- Extra requirements: -*-
         'z3c.jbot',
         'plone.api',
+        'plone.app.blob',
         'plone.restapi',
         'plone.app.dexterity',
     ],
