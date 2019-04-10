@@ -31,33 +31,21 @@ class EmbedContentContentView(DefaultView):
 
     def publishTraverse(self, request, name):
         path = name.split('/')
-        obj = getattr(self.context, self.context.package_signature)
+        zipTree = getattr(self.context,'zipTree', None)
         for element in path:
             try:
-                obj = obj[element]
+                zipTree = zipTree[element]
             except Exception:
                 return None
-        return obj
+        return zipTree
 
 class EmbedContentEditForm(DefaultEditForm):
-
-    def updateWidgets(self):
-        super(DefaultEditForm, self).updateWidgets()
-        self.widgets['package_signature'].mode = interfaces.HIDDEN_MODE
+    pass
 
 
 
 class EmbedContentAddForm(DefaultAddForm):
     portal_type = 'EmbedContent'
-
-    def update(self):
-        DefaultAddForm.update(self)
-
-    def updateWidgets(self):
-        """ """
-        DefaultAddForm.updateWidgets(self)
-
-
 
 
 class EmbedContentAddView(DefaultAddView):

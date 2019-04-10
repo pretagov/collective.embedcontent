@@ -14,16 +14,9 @@ class IEmbedContent(model.Schema):
         required=False,
     )
 
-
     html_content = RichText(
         title=(u'HTML Content'),
         description=(u'HTML content'),
-        required=False,
-    )
-
-    package_signature = schema.Text(
-        title=(u'Package signature'),
-        description=(u'Hash value of package content'),
         required=False,
     )
 
@@ -33,3 +26,4 @@ class IEmbedContent(model.Schema):
         default=(u'index.html'),
         required=False,
     )
+
