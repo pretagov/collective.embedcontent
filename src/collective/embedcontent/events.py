@@ -14,11 +14,6 @@ def afterContentCreated(obj, event):
         setattr(obj, 'zipTree', zipTree)
 
 def afterContentModified(obj, event):
-    # Prevent looping while modifying object in this event
-    if getattr(obj,'modified_in_progress',False):
-        print 'In progress'
-        return
-    setattr(obj, 'modified_in_progress',True)
     if obj.package_content:
         new_hash = hash(obj.package_content)
         old_hash = getattr(obj,'contentHash',None)
@@ -29,7 +24,6 @@ def afterContentModified(obj, event):
         zipTree.clear()
         extract_package_content(zipTree, obj.package_content)
         setattr(obj, 'zipTree', zipTree)
-    setattr(obj, 'modified_in_progress', False)
 
 def extract_package_content(zipTree, zip_blob):
     """
@@ -52,7 +46,6 @@ def extract_package_content(zipTree, zip_blob):
             parent_folder_name = '/'.join(path.split(os.sep)[:-1])
             parent_root = parent_dict[parent_folder_name] if parent_folder_name in parent_dict else zipTree
             data = zipfile.read(path)
-            print get_contenttype(filename=filename)
             blob = BlobWrapper(get_contenttype(filename=filename))
             file_obj = blob.getBlob().open('w')
             file_obj.write(data)
