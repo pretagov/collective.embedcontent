@@ -32,13 +32,6 @@ class Py23DocChecker(doctest.OutputChecker):
 def get_browser(layer, auth=True):
     browser = Browser(layer['app'])
     browser.handleErrors = False
-    if auth:
-        api.user.create(
-            username='adm', password='secret', email='a@example.org',
-            roles=('Manager', )
-        )
-        transaction.commit()
-        browser.addHeader('Authorization', 'Basic adm:secret')
     return browser
 
 
