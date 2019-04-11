@@ -25,7 +25,7 @@ def afterContentModified(obj, event):
         if new_hash == old_hash:
             return
         setattr(obj, 'contentHash', str(new_hash))
-        zipTree = getattr(obj,'contentHash', OOBTree())
+        zipTree = getattr(obj,'zipTree', OOBTree())
         zipTree.clear()
         extract_package_content(zipTree, obj.package_content)
         setattr(obj, 'zipTree', zipTree)
