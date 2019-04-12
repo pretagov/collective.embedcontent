@@ -43,18 +43,20 @@ class EmbedContentContentView(DefaultView):
         pass
 
     def publishTraverse(self, request, name):
-        path =  request.URL[len(self.context.absolute_url()):].split('/')
-        # path will be ['', '@@contents','randomID','path/to/resource']
+        content_hash = getattr(self.context, 'contentHash', None)
         zipTree = getattr(self.context,'zipTree', None)
-        for element in path[3:]:
+        node = zipTree[content_hash]
+        import pdb
+        pdb.set_trace()
+        for element in request.path[::-1]:
             try:
-                zipTree = zipTree[element]
+                node = node[element]
             except Exception:
                 return None
-        if isinstance(zipTree, OOBTree):
+        if isinstance(node, OOBTree):
             return self
-        request.RESPONSE.setHeader('content-type', zipTree.content_type)
-        return PublishableString(zipTree)
+        request.RESPONSE.setHeader('content-type', node.content_type)
+        return PublishableString(node)
 
 class EmbedContentEditForm(DefaultEditForm):
     pass
