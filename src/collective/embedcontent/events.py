@@ -25,7 +25,7 @@ def afterContentModified(obj, event):
         extract_package_content(zipTree, obj.package_content)
         setattr(obj, 'zipTree', zipTree)
 
-def extract_package_content(zipTree, zip_blob):
+def extract_package_content(root, zip_blob):
     """
         Extract package content into ZOB Tree
     """
@@ -37,19 +37,19 @@ def extract_package_content(zipTree, zip_blob):
             path = path[:-1]
             foldername = path.split(os.sep)[-1]
             parent_folder_name = '/'.join(path.split(os.sep)[:-1])
-            parent_root = parent_dict[parent_folder_name] if parent_folder_name in parent_dict else zipTree
-            parent_root.insert(foldername, OOBTree())
-            parent_dict[path] = parent_root[foldername]
+            parent = parent_dict[parent_folder_name] if parent_folder_name in parent_dict else root
+            parent.insert(foldername, OOBTree())
+            parent_dict[path] = parent[foldername]
         else:
             # create file
             filename = path.split(os.sep)[-1]
             parent_folder_name = '/'.join(path.split(os.sep)[:-1])
-            parent_root = parent_dict[parent_folder_name] if parent_folder_name in parent_dict else zipTree
+            parent = parent_dict[parent_folder_name] if parent_folder_name in parent_dict else root
             data = zipfile.read(path)
             blob = BlobWrapper(get_contenttype(filename=filename))
             file_obj = blob.getBlob().open('w')
             file_obj.write(data)
             file_obj.close()
             blob.setFilename(filename)
-            parent_root.insert(filename, blob)
+            parent.insert(filename, blob)
 

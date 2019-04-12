@@ -9,6 +9,8 @@ from zope import component
 from Products.Five import BrowserView
 from Products.CMFCore.utils import getToolByName
 from BTrees.OOBTree import OOBTree
+import urllib
+
 
 class EmbedContentView(DefaultView):
 
@@ -46,7 +48,7 @@ class EmbedContentContentView(DefaultView):
         zipTree = getattr(self.context,'zipTree', None)
         for element in path[2:]:
             try:
-                zipTree = zipTree[element]
+                zipTree = zipTree[urllib.unquote(element)]
             except Exception:
                 return None
         if isinstance(zipTree, OOBTree):
