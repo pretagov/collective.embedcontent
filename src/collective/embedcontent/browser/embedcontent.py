@@ -13,7 +13,8 @@ from BTrees.OOBTree import OOBTree
 class EmbedContentView(DefaultView):
 
     def package_url(self):
-        return '%s/@@contents/%s' % (self.context.absolute_url(), self.context.index_file)
+        content_hash = getattr(self.context, 'contentHash', None)
+        return '%s/@@contents/%s/%s' % (self.context.absolute_url(), content_hash, self.context.index_file)
 
 
 class PublishableString(str):
@@ -43,8 +44,9 @@ class EmbedContentContentView(DefaultView):
 
     def publishTraverse(self, request, name):
         path =  request.URL[len(self.context.absolute_url()):].split('/')
+        # path will be ['', '@@contents','randomID','path/to/resource']
         zipTree = getattr(self.context,'zipTree', None)
-        for element in path[2:]:
+        for element in path[3:]:
             try:
                 zipTree = zipTree[element]
             except Exception:
