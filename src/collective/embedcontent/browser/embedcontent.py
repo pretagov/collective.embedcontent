@@ -15,7 +15,8 @@ import urllib
 class EmbedContentView(DefaultView):
 
     def package_url(self):
-        return '%s/@@contents/%s' % (self.context.absolute_url(), self.context.index_file)
+        randomID = getattr(self.context, 'contentHash', None)
+        return '%s/@@contents/%s/%s' % (self.context.absolute_url(), randomID, self.context.index_file)
 
 
 class PublishableString(str):
@@ -46,7 +47,7 @@ class EmbedContentContentView(DefaultView):
     def publishTraverse(self, request, name):
         path =  request.URL[len(self.context.absolute_url()):].split('/')
         zipTree = getattr(self.context,'zipTree', None)
-        for element in path[2:]:
+        for element in path[3:]:
             try:
                 zipTree = zipTree[urllib.unquote(element)]
             except Exception:

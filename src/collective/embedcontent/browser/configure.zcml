@@ -2,6 +2,7 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:cache="http://namespaces.zope.org/cache"
     i18n_domain="collective.embedcontent">
 
   <!-- Set overrides folder for Just-a-Bunch-Of-Templates product -->
@@ -55,6 +56,14 @@
         />
 </class>
 
+  <include package="z3c.caching" file="meta.zcml" />
+  <include package="plone.app.caching" />
+  <include package="plone.caching" />
+
+   <cache:ruleset
+       for="collective.embedcontent.browser.embedcontent.EmbedContentContentView"
+      ruleset="plone.stableResource"
+      />
 
 
 

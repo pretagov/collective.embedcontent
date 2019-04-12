@@ -7,19 +7,19 @@ from BTrees.OOBTree import OOBTree
 
 def afterContentCreated(obj, event):
     if obj.package_content:
-        content_hash = hash(obj.package_content)
-        setattr(obj,'contentHash',str(content_hash))
+        content_hash = str(hash(obj.package_content))
+        setattr(obj,'contentHash',content_hash)
         zipTree = OOBTree()
         extract_package_content(zipTree, obj.package_content)
         setattr(obj, 'zipTree', zipTree)
 
 def afterContentModified(obj, event):
     if obj.package_content:
-        new_hash = hash(obj.package_content)
+        new_hash = str(hash(obj.package_content))
         old_hash = getattr(obj,'contentHash',None)
         if new_hash == old_hash:
             return
-        setattr(obj, 'contentHash', str(new_hash))
+        setattr(obj, 'contentHash', new_hash)
         zipTree = getattr(obj,'zipTree', OOBTree())
         zipTree.clear()
         extract_package_content(zipTree, obj.package_content)

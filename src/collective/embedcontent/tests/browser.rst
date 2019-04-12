@@ -64,6 +64,14 @@ ZIP content is display in browser
     >>> 'The standard schema fields' in browser.contents
     True
 
+RandomID is included in the iframe source
+
+    >>> import re
+    >>> match = re.search("http://nohost/plone/testcontent2/@@contents/([-+]?[0-9]+)/Plone.html",browser.contents)
+    >>> match != None
+    True
+    >>> randomID1 = match.groups()[0]
+
 Replace ZIP content
 
     >>> browser.getLink('Edit').click()
@@ -73,4 +81,16 @@ Replace ZIP content
     >>> browser.getControl(name='form.widgets.index_file').value = 'pretagov.html'
     >>> browser.getControl('Save').click()
     >>> 'PretaGov is an approved supplier' in browser.contents
+    True
+
+RandomID is included in the iframe source
+
+    >>> import re
+    >>> match = re.search("http://nohost/plone/testcontent2/@@contents/([-+]?[0-9]+)/pretagov.html",browser.contents)
+    >>> match != None
+    True
+    >>> randomID2 = match.groups()[0]
+
+RandomID change
+    >>> randomID1 != randomID2
     True

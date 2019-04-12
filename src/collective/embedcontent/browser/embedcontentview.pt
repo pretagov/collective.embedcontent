@@ -3,20 +3,49 @@
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       lang="en"
-      metal:use-macro="context/main_template/macros/master"
-      i18n:domain="example.conference">
+         metal:use-macro="context/main_template/macros/master"
+         i18n:domain="example.conference">
 <body>
+
 
 <metal:main fill-slot="main">
     <tal:main-macro metal:define-macro="main">
+        <script>
+            $(document).ready(function () {
+                $("iframe").load(function () {
+                    $(this).height($(this).contents().find("html").height());
+                });
+            });
+
+        </script>
+        <style>
+            .iframe-container {
+                overflow: hidden;
+            }
+
+            .iframe-container iframe {
+                border: 0;
+                height: 100%;
+                left: 0;
+                top: 0;
+                width: 100%;
+                overflow: hidden;
+            }
+
+
+        </style>
+
         <div tal:replace="structure provider:plone.abovecontenttitle" />
         <h1 class="documentFirstHeading" tal:content="context/title" />
         <div tal:replace="structure provider:plone.belowcontenttitle" />
         <p class="documentDescription" tal:content="context/description" />
         <div tal:replace="structure provider:plone.abovecontentbody" />
-            <div tal:content="structure view/w/html_content/render" tal:condition="view/w/html_content" />
-            <iframe tal:attributes="src view/package_url" tal:condition="view/w/package_content" />
+        <div tal:content="structure view/w/html_content/render" tal:condition="view/w/html_content" />
+        <div class="iframe-container">
+            <iframe scrolling="no" tal:attributes="src view/package_url" tal:condition="view/w/package_content" />
+        </div>
         <div tal:replace="structure provider:plone.belowcontentbody" />
+
     </tal:main-macro>
 </metal:main>
 
