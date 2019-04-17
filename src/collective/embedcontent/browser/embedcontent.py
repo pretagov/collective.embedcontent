@@ -122,8 +122,6 @@ class EmbedContentTileEdit(DefaultEditView):
 class EmbedContentTileAddForm(DefaultAddForm):
 
     def extractData(self):
-        import pdb
-        pdb.set_trace()
         embed_content = saveTileDataToEmbedContent(self)
         if embed_content:
             zope.event.notify(ObjectCreatedEvent(embed_content))
