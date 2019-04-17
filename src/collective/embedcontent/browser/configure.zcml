@@ -74,21 +74,6 @@
             />
     </class>
 
- <adapter
-        for="zope.annotation.interfaces.IAnnotatable
-             zope.publisher.interfaces.browser.IDefaultBrowserLayer
-             plone.tiles.interfaces.ITileType"
-        provides="plone.app.tiles.interfaces.ITileAddView"
-        factory=".embedcontent.EmbedContentTileAdd"
-        />
-
-    <class class=".embedcontent.EmbedContentTileAdd">
-         <require
-            permission="cmf.ModifyPortalContent"
-            interface="zope.publisher.interfaces.browser.IBrowserPage"
-            />
-    </class>
-
 
   <adapter
         for="zope.annotation.interfaces.IAnnotatable

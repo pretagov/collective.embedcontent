@@ -70,35 +70,28 @@ class EmbedContentContentView(BrowserView):
         return PublishableString(zipTree)
 
 
-def saveTileDataToEmbedContent(form):
-    if not form.tileId:
-        return
-    embed_content_id = '%s-%s-EmbedContent' % (form.tileType.__name__, form.tileId)
-    embed_content = getattr(form.context, embed_content_id, None)
-    if not embed_content:
-        embed_content = createContentInContainer(form.context.aq_parent, "EmbedContent", title=embed_content_id)
-        setattr(form.context, embed_content_id, embed_content)
-    embed_content.html_content = RichTextValue(form.request.get('%s.html_content' % form.tileType.__name__))
-    embed_content.index_file = form.request.get('%s.index_file' % form.tileType.__name__)
-    if form.request.get('%s.package_content' % form.tileType.__name__):
-        package_file = form.request.get('%s.package_content' % form.tileType.__name__)
-        package_file.seek(0)
-        filename = package_file.filename
-        contenttype = get_contenttype(filename=filename)
-        data = package_file.read()
-        embed_content.package_content = NamedBlobFile(data, contenttype, unicode(filename))
-    else:
-        action =  form.request.get('%s.package_content.action' % form.tileType.__name__)
-        if action =='remove':
-            embed_content.package_content = None
-    return embed_content
-
 class EmbedContentTileEditForm(DefaultEditForm):
 
     def extractData(self):
-        embed_content = saveTileDataToEmbedContent(self)
-        if embed_content:
-            zope.event.notify(ObjectModifiedEvent(embed_content))
+        embed_content_id = '%s-%s-EmbedContent' % (self.tileType.__name__, self.tileId)
+        embed_content = getattr(self.context, embed_content_id, None)
+        if not embed_content:
+            embed_content = createContentInContainer(self.context.aq_parent, "EmbedContent", title=embed_content_id)
+            setattr(self.context, embed_content_id, embed_content)
+        embed_content.html_content = RichTextValue(self.request.get('%s.html_content' % self.tileType.__name__))
+        embed_content.index_file = self.request.get('%s.index_file' % self.tileType.__name__)
+        if self.request.get('%s.package_content' % self.tileType.__name__):
+            package_file = self.request.get('%s.package_content' % self.tileType.__name__)
+            package_file.seek(0)
+            filename = package_file.filename
+            contenttype = get_contenttype(filename=filename)
+            data = package_file.read()
+            embed_content.package_content = NamedBlobFile(data, contenttype, unicode(filename))
+        else:
+            action = self.request.get('%s.package_content.action' % self.tileType.__name__)
+            if action == 'remove':
+                embed_content.package_content = None
+        zope.event.notify(ObjectModifiedEvent(embed_content))
         data, errors =  DefaultEditForm.extractData(self)
         # Remove blob from data as it is not supported by tile
         if 'package_content' in data:
@@ -118,21 +111,6 @@ class EmbedContentTileEditForm(DefaultEditForm):
 
 class EmbedContentTileEdit(DefaultEditView):
     form = EmbedContentTileEditForm
-
-class EmbedContentTileAddForm(DefaultAddForm):
-
-    def extractData(self):
-        embed_content = saveTileDataToEmbedContent(self)
-        if embed_content:
-            zope.event.notify(ObjectCreatedEvent(embed_content))
-        # Remove blob from data as it is not supported by tile
-        data, errors = DefaultAddForm.extractData(self)
-        if 'package_content' in data:
-            del data['package_content']
-        return (data, errors)
-
-class EmbedContentTileAdd(DefaultAddView):
-    form = EmbedContentTileAddForm
 
 
 class EmbedContentTileDeleteForm(DefaultDeleteForm):
