@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xml:lang="en"
+      lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal">
+<body tal:define="title context/Title|nothing"
+         i18n:domain="plone">
+<script>
+    $(document).ready(function () {
+        $("iframe.embed-content-frame").load(function () {
+            $(this).height($(this).contents().find("html").height());
+        });
+    });
+
+</script>
+<style>
+    .iframe-container {
+        overflow: hidden;
+    }
+
+    .iframe-container iframe {
+        border: 0;
+        height: 100%;
+        left: 0;
+        top: 0;
+        width: 100%;
+        overflow: hidden;
+    }
+
+
+</style>
+<div class="tileItem clearfix">
+    <div class="tileBody">
+        <div tal:replace="structure view/context_content/html_content/output"  tal:condition="view/context_content/html_content"></div>
+        <div class="iframe-container"  tal:condition="view/context_content/package_content" >
+            <iframe class="embed-content-frame" scrolling="no" tal:attributes="src view/context_content/package_url" tal:condition="view/context_content/package_content" />
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
+
+
+
+
+

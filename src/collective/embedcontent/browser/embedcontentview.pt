@@ -12,7 +12,7 @@
     <tal:main-macro metal:define-macro="main">
         <script>
             $(document).ready(function () {
-                $("iframe").load(function () {
+                $("iframe.embed-content-frame").load(function () {
                     $(this).height($(this).contents().find("html").height());
                 });
             });
@@ -40,9 +40,9 @@
         <div tal:replace="structure provider:plone.belowcontenttitle" />
         <p class="documentDescription" tal:content="context/description" />
         <div tal:replace="structure provider:plone.abovecontentbody" />
-        <div tal:content="structure view/w/html_content/render" tal:condition="view/w/html_content" />
-        <div class="iframe-container">
-            <iframe scrolling="no" tal:attributes="src view/package_url" tal:condition="view/w/package_content" />
+        <div tal:content="structure view/w/html_content/render" tal:condition="view/w/html_content/value" />
+        <div class="iframe-container"  tal:condition="view/w/package_content/value" >
+            <iframe class="embed-content-frame" scrolling="no" tal:attributes="src view/package_url" tal:condition="view/w/package_content" />
         </div>
         <div tal:replace="structure provider:plone.belowcontentbody" />
 

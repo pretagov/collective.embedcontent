@@ -34,31 +34,9 @@
       permission="zope.Public"
       />
 
-  <browser:page
-    for="collective.embedcontent.content.embedcontent.IEmbedContent"
-    name="edit"
-    class="collective.embedcontent.browser.embedcontent.EmbedContentEditForm"
-    permission="cmf.ModifyPortalContent"
-    />
-
-   <adapter
-        for="Products.CMFCore.interfaces.IFolderish
-             plone.dexterity.interfaces.IDexterityFTI"
-        provides="zope.publisher.interfaces.browser.IBrowserPage"
-        factory="collective.embedcontent.browser.embedcontent.EmbedContentAddView"
-        name="EmbedContent"
-        />
-
-  <class class="collective.embedcontent.browser.embedcontent.EmbedContentAddView">
-    <require
-        permission="cmf.AddPortalContent"
-        interface="zope.publisher.interfaces.browser.IBrowserPage"
-        />
-</class>
 
   <include package="z3c.caching" file="meta.zcml" />
   <include package="plone.app.caching" />
-  <include package="plone.caching" />
 
    <cache:ruleset
        for="collective.embedcontent.browser.embedcontent.EmbedContentContentView"
@@ -66,5 +44,65 @@
       />
 
 
+
+  <include package="plone.app.mosaic" />
+
+<plone:tile
+    name="collective.embedcontent.tile"
+    title="Embed Content"
+    description="A tile which embed HTML content"
+    add_permission="cmf.ModifyPortalContent"
+    class="collective.embedcontent.browser.embedcontent.EmbedContentTile"
+    for="*"
+    permission="zope.Public"
+    schema="collective.embedcontent.content.embedcontent.IEmbedContent"
+    template="embedcontenttile.pt"
+    />
+
+ <adapter
+        for="zope.annotation.interfaces.IAnnotatable
+             zope.publisher.interfaces.browser.IDefaultBrowserLayer
+             plone.tiles.interfaces.ITileType"
+        provides="plone.app.tiles.interfaces.ITileEditView"
+        factory=".embedcontent.EmbedContentTileEdit"
+        />
+
+    <class class=".embedcontent.EmbedContentTileEdit">
+        <require
+            permission="cmf.ModifyPortalContent"
+            interface="zope.publisher.interfaces.browser.IBrowserPage"
+            />
+    </class>
+
+ <adapter
+        for="zope.annotation.interfaces.IAnnotatable
+             zope.publisher.interfaces.browser.IDefaultBrowserLayer
+             plone.tiles.interfaces.ITileType"
+        provides="plone.app.tiles.interfaces.ITileAddView"
+        factory=".embedcontent.EmbedContentTileAdd"
+        />
+
+    <class class=".embedcontent.EmbedContentTileAdd">
+         <require
+            permission="cmf.ModifyPortalContent"
+            interface="zope.publisher.interfaces.browser.IBrowserPage"
+            />
+    </class>
+
+
+  <adapter
+        for="zope.annotation.interfaces.IAnnotatable
+             zope.publisher.interfaces.browser.IDefaultBrowserLayer
+             plone.tiles.interfaces.ITileType"
+        provides="plone.app.tiles.interfaces.ITileDeleteView"
+        factory=".embedcontent.EmbedContentTileDelete"
+        />
+
+    <class class=".embedcontent.EmbedContentTileDelete">
+         <require
+            permission="cmf.ModifyPortalContent"
+            interface="zope.publisher.interfaces.browser.IBrowserPage"
+            />
+    </class>
 
 </configure>
