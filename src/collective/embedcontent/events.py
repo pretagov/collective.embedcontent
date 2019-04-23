@@ -24,6 +24,8 @@ def afterContentModified(obj, event):
         zipTree.clear()
         extract_package_content(zipTree, obj.package_content)
         setattr(obj, 'zipTree', zipTree)
+    else:
+        setattr(obj, 'zipTree', OOBTree())
 
 def extract_package_content(root, zip_blob):
     """

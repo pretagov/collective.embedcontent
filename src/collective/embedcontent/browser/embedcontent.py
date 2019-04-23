@@ -7,6 +7,7 @@ from BTrees.OOBTree import OOBTree
 from plone.app.standardtiles.existingcontent import uuidToObject
 from plone.uuid.interfaces import IUUID
 from zExceptions import Unauthorized
+from z3c.form import form, button
 from plone.tiles.tile import Tile
 from plone.app.tiles.browser.edit import DefaultEditView, DefaultEditForm
 from plone.app.tiles.browser.add import DefaultAddView, DefaultAddForm
@@ -16,6 +17,7 @@ from zope.lifecycleevent import ObjectModifiedEvent, ObjectCreatedEvent
 from plone.namedfile.utils import get_contenttype
 from plone.app.textfield.value import RichTextValue
 from plone.namedfile.file import NamedBlobFile
+from plone.app.tiles import _ as _
 import zope.event
 import urllib
 
@@ -72,7 +74,8 @@ class EmbedContentContentView(BrowserView):
 
 class EmbedContentTileEditForm(DefaultEditForm):
 
-    def extractData(self):
+    @button.buttonAndHandler(_('Save'), name='save')
+    def handleSave(self, action):
         embed_content_id = '%s-%s-EmbedContent' % (self.tileType.__name__, self.tileId)
         embed_content = getattr(self.context, embed_content_id, None)
         if not embed_content:
@@ -92,6 +95,13 @@ class EmbedContentTileEditForm(DefaultEditForm):
             if action == 'remove':
                 embed_content.package_content = None
         zope.event.notify(ObjectModifiedEvent(embed_content))
+        DefaultEditForm.handleSave(self,action)
+
+    @button.buttonAndHandler(_(u'Cancel'), name='cancel')
+    def handleCancel(self, action):
+        DefaultEditForm.handleCancel(self,action)
+
+    def extractData(self):
         data, errors =  DefaultEditForm.extractData(self)
         # Remove blob from data as it is not supported by tile
         if 'package_content' in data:
