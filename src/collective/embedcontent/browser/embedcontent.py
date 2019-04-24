@@ -4,13 +4,9 @@ from zope.interface import implements, Interface
 from zope.publisher.interfaces import IPublishTraverse
 from Products.Five import BrowserView
 from BTrees.OOBTree import OOBTree
-from plone.app.standardtiles.existingcontent import uuidToObject
-from plone.uuid.interfaces import IUUID
-from zExceptions import Unauthorized
 from z3c.form import form, button
 from plone.tiles.tile import Tile
 from plone.app.tiles.browser.edit import DefaultEditView, DefaultEditForm
-from plone.app.tiles.browser.add import DefaultAddView, DefaultAddForm
 from plone.app.tiles.browser.delete import DefaultDeleteView, DefaultDeleteForm
 from plone.dexterity.utils import createContentInContainer
 from zope.lifecycleevent import ObjectModifiedEvent, ObjectCreatedEvent

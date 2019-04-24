@@ -34,7 +34,6 @@
       permission="zope.Public"
       />
 
-
   <include package="z3c.caching" file="meta.zcml" />
   <include package="plone.app.caching" />
 

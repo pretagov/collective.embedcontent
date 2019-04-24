@@ -12,6 +12,14 @@ Integration tests
     ...         '',
     ...         {'fullname': 'Site Manager', 'email': memberName+'@dummy.fr',}
     ...         )
+    >>> memberName = 'userManager'
+    >>> portal.portal_membership.addMember(
+    ...         memberName,
+    ...         memberName,
+    ...         ('Member',),
+    ...         '',
+    ...         {'fullname': 'Site Member', 'email': memberName+'@dummy.fr',}
+    ...         )
     >>> transaction.commit()
 
 Log in with Site Manager access rights:
@@ -94,3 +102,23 @@ RandomID is included in the iframe source
 RandomID change
     >>> randomID1 != randomID2
     True
+
+Security testing
+
+    >>> from Products.CMFCore.utils import getToolByName
+    >>> wf_tool = getToolByName(portal, 'portal_workflow')
+    >>> content = portal['testcontent2']
+    >>> wf_tool.getInfoFor(content,'review_state')
+    'private'
+    >>> browser.open(content.absolute_url())
+    >>> 'PretaGov is an approved supplier' in browser.contents
+    True
+    >>> browser.getLink('Log out').click()
+    >>> browser.getLink('Log in').click()
+    >>> browser.getControl('Login Name').value = 'userManager'
+    >>> browser.getControl('Password').value = 'userManager'
+    >>> browser.getControl('Log in').click()
+    >>> browser.open(content.absolute_url())
+    Traceback (most recent call last):
+    ...
+    Unauthorized: You are not authorized to access this resource.
