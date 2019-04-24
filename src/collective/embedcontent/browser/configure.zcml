@@ -38,7 +38,7 @@
   <include package="plone.app.caching" />
 
    <cache:ruleset
-       for="collective.embedcontent.browser.embedcontent.EmbedContentContentView"
+       for="collective.embedcontent.browser.embedcontent.PublishableString"
       ruleset="plone.stableResource"
       />
 
