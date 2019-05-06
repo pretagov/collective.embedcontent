@@ -103,6 +103,7 @@ RandomID change
     >>> randomID1 != randomID2
     True
 
+
 Security testing
 
     >>> from Products.CMFCore.utils import getToolByName
@@ -122,3 +123,5 @@ Security testing
     Traceback (most recent call last):
     ...
     Unauthorized: You are not authorized to access this resource.
+
+

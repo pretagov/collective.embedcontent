@@ -36,20 +36,22 @@
 
   <include package="z3c.caching" file="meta.zcml" />
   <include package="plone.app.caching" />
+  <include package="plone.app.mosaic" />
 
    <cache:ruleset
        for="collective.embedcontent.browser.embedcontent.PublishableString"
       ruleset="plone.stableResource"
       />
 
-
-
-  <include package="plone.app.mosaic" />
+ <permission
+    id="collective.embedcontent.EditContent"
+    title="collective.embedcontent: Edit EmbedContent"
+/>
 
 <plone:tile
     name="collective.embedcontent.tile"
     title="Embed Content"
-    description="A tile which embed HTML content"
+    description="Embed an iframe of static html into your page"
     add_permission="cmf.ModifyPortalContent"
     class="collective.embedcontent.browser.embedcontent.EmbedContentTile"
     for="*"
@@ -59,8 +61,7 @@
     />
 
  <adapter
-        for="zope.annotation.interfaces.IAnnotatable
-             zope.publisher.interfaces.browser.IDefaultBrowserLayer
+        for="zope.publisher.interfaces.browser.IDefaultBrowserLayer
              plone.tiles.interfaces.ITileType"
         provides="plone.app.tiles.interfaces.ITileEditView"
         factory=".embedcontent.EmbedContentTileEdit"
@@ -68,15 +69,14 @@
 
     <class class=".embedcontent.EmbedContentTileEdit">
         <require
-            permission="cmf.ModifyPortalContent"
+            permission="collective.embedcontent.EditContent"
             interface="zope.publisher.interfaces.browser.IBrowserPage"
             />
     </class>
 
 
   <adapter
-        for="zope.annotation.interfaces.IAnnotatable
-             zope.publisher.interfaces.browser.IDefaultBrowserLayer
+        for="zope.publisher.interfaces.browser.IDefaultBrowserLayer
              plone.tiles.interfaces.ITileType"
         provides="plone.app.tiles.interfaces.ITileDeleteView"
         factory=".embedcontent.EmbedContentTileDelete"
@@ -84,7 +84,7 @@
 
     <class class=".embedcontent.EmbedContentTileDelete">
          <require
-            permission="cmf.ModifyPortalContent"
+            permission="collective.embedcontent.EditContent"
             interface="zope.publisher.interfaces.browser.IBrowserPage"
             />
     </class>
