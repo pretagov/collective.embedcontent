@@ -34,7 +34,7 @@
     <div class="tileBody">
         <div tal:replace="structure view/context_content/html_content/output"  tal:condition="view/context_content/html_content"></div>
         <div class="iframe-container"  tal:condition="view/context_content/package_content" >
-            <iframe class="embed-content-frame" scrolling="no" tal:attributes="src view/context_content/package_url" tal:condition="view/context_content/package_content" />
+            <iframe class="embed-content-frame" scrolling="no" tal:attributes="src view/package_url" tal:condition="view/context_content/package_content" />
         </div>
     </div>
 </div>

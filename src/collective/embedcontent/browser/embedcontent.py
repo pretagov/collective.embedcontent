@@ -252,12 +252,12 @@ class EmbedContentTile(Tile):
     def context_content(self):
         embed_content_id = '%s-%s-EmbedContent' % (self.__name__, self.id)
         embed_content = getattr(self.context, embed_content_id, None)
-        content = {'package_content':'','html_content':'','index_file':'','package_url':''}
-        if embed_content:
-            content['package_content'] = embed_content.package_content
-            content['html_content'] = embed_content.html_content
-            content['index_file'] = embed_content.index_file
-            content['package_url'] = getEmbedContentPackageUrl(embed_content)
+        fields = ['package_content','html_content','index_file']
+        content = {field: getattr(embed_content,field,None) for field in fields if getattr(embed_content,field, None)}
         return content
 
-
+    @property
+    def package_url(self):
+        embed_content_id = '%s-%s-EmbedContent' % (self.__name__, self.id)
+        embed_content = getattr(self.context, embed_content_id, None)
+        return getEmbedContentPackageUrl(embed_content)
