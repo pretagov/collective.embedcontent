@@ -21,9 +21,11 @@ from zope.schema.vocabulary import SimpleVocabulary
 from plone.app.blob.field import BlobWrapper
 from zipfile import  ZipFile
 from plone.tiles import PersistentTile
+from zope.browser.interfaces import IBrowserView
 from plone.namedfile.utils import get_contenttype
 from .. import _
 import os
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 
 def generateUniqueIDForPackageFile(fileObj):
     return str(hash(fileObj))
@@ -93,6 +95,9 @@ def onContentUpdated(obj):
         setattr(obj, 'zipTree', OOBTree())
     guessIndexFile(obj)
 
+def getEmbedContentIdInsideTile(tileType, tileId):
+    return '%s-%s-EmbedContent' % (tileType, tileId)
+
 
 class EmbedContentAddForm(dexterityadd.DefaultAddForm):
     portal_type = 'EmbedContent'
@@ -133,9 +138,6 @@ class EmbedContentView(DefaultView):
     def package_url(self):
         return getEmbedContentPackageUrl(self.context)
 
-    def content(self):
-        return self
-
 class PublishableString(str):
     """Zope will publish this since it has a __doc__ string"""
 
@@ -151,6 +153,8 @@ class EmbedContentContentView(BrowserView):
     """ @@contents browser view to access zipfile's contents
         """
     implements(IPublishTraverse)
+
+    index = ViewPageTemplateFile("embedcontentview.pt")
 
     security = ClassSecurityInfo()
 
@@ -183,7 +187,7 @@ class EmbedContentTileEditForm(tileedit.DefaultEditForm):
     @button.buttonAndHandler(_('Save'), name='save')
     def handleSave(self, action):
         data, errors = self.extractData()
-        embed_content_id = '%s-%s-EmbedContent' % (self.tileType.__name__, self.tileId)
+        embed_content_id = getEmbedContentIdInsideTile(self.tileType.__name__,self.tileId)
         embed_content = getattr(self.context, embed_content_id, None)
         if not embed_content:
             embed_content = createContentInContainer(self.context.aq_parent, "EmbedContent", title=embed_content_id)
@@ -200,7 +204,7 @@ class EmbedContentTileEditForm(tileedit.DefaultEditForm):
 
     def getContent(self):
         content = tileedit.DefaultEditForm.getContent(self)
-        embed_content_id = '%s-%s-EmbedContent' % (self.tileType.__name__, self.tileId)
+        embed_content_id = getEmbedContentIdInsideTile(self.tileType.__name__, self.tileId)
         embed_content = getattr(self.context, embed_content_id, None)
         if embed_content:
             content['package_content'] = embed_content.package_content
@@ -216,7 +220,7 @@ class EmbedContentTileEdit(tileedit.DefaultEditView):
 class EmbedContentTileDeleteForm(tiledelete.DefaultDeleteForm):
 
     def extractData(self):
-        embed_content_id = '%s-%s-EmbedContent' % (self.tileType.__name__, self.tileId)
+        embed_content_id = getEmbedContentIdInsideTile(self.tileType.__name__, self.tileId)
         embed_content = getattr(self.context, embed_content_id, None)
         if embed_content:
             parent = self.context.aq_parent
@@ -231,7 +235,7 @@ class EmbedContentTile(PersistentTile):
 
     @property
     def context_content(self):
-        embed_content_id = '%s-%s-EmbedContent' % (self.__name__, self.id)
+        embed_content_id = getEmbedContentIdInsideTile(self.__name__, self.id)
         embed_content = getattr(self.context, embed_content_id, None)
         fields = ['package_content','html_content','index_file']
         content = {field: getattr(embed_content,field,None) for field in fields}
@@ -242,3 +246,4 @@ class EmbedContentTile(PersistentTile):
         embed_content_id = '%s-%s-EmbedContent' % (self.__name__, self.id)
         embed_content = getattr(self.context, embed_content_id, None)
         return getEmbedContentPackageUrl(embed_content)
+

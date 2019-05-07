@@ -4,37 +4,28 @@
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
       lang="en"
          metal:use-macro="context/main_template/macros/master"
-         i18n:domain="example.conference">
+         i18n:domain="collective.embedcontent">
+
+<head>
+    <metal:block fill-slot="style_slot">
+        <link rel="stylesheet" type="text/css"
+                 tal:define="navroot context/@@plone_portal_state/navigation_root_url"
+                 tal:attributes="href string:${navroot}/++resource++collective.embedcontent/iframe.css"
+        />
+    </metal:block>
+    <metal:block fill-slot="javascript_head_slot">
+        <script type="text/javascript"
+                 tal:define="navroot context/@@plone_portal_state/navigation_root_url"
+                 tal:attributes="src string:${navroot}/++resource++collective.embedcontent/iframe.js"
+        ></script>
+    </metal:block>
+</head>
+
 <body>
 
 
 <metal:main fill-slot="main">
-    <tal:main-macro metal:define-macro="main">
-        <script>
-            $(document).ready(function () {
-                $("iframe.embed-content-frame").load(function () {
-                    $(this).height($(this).contents().find("html").height());
-                });
-            });
-
-        </script>
-        <style>
-            .iframe-container {
-                overflow: hidden;
-            }
-
-            .iframe-container iframe {
-                border: 0;
-                height: 100%;
-                left: 0;
-                top: 0;
-                width: 100%;
-                overflow: hidden;
-            }
-
-
-        </style>
-
+    <tal:main-macro metal:define-macro="main" >
         <div tal:replace="structure provider:plone.abovecontenttitle" />
         <h1 class="documentFirstHeading" tal:content="context/title" />
         <div tal:replace="structure provider:plone.belowcontenttitle" />
@@ -42,7 +33,8 @@
         <div tal:replace="structure provider:plone.abovecontentbody" />
         <div tal:content="structure view/w/html_content/render" tal:condition="view/w/html_content/value" />
         <div class="iframe-container"  tal:condition="view/w/package_content/value" >
-            <iframe class="embed-content-frame" scrolling="no" tal:attributes="src view/package_url" tal:condition="view/w/package_content" />
+            <iframe class="embed-content-frame"
+                    scrolling="no" tal:attributes="src view/package_url" tal:condition="view/w/package_content" />
         </div>
         <div tal:replace="structure provider:plone.belowcontentbody" />
 

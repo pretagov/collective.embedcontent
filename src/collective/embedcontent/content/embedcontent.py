@@ -8,12 +8,13 @@ from zope.interface import provider
 from zope.schema.vocabulary import SimpleTerm
 from zope.schema.vocabulary import SimpleVocabulary
 
+
 items = [ ('index', u'Index HTML')]
 terms = [ SimpleTerm(value=pair[0], token=pair[0], title=pair[1]) for pair in items ]
 indexFileVocabulary = SimpleVocabulary(terms)
 
 class IEmbedContent(model.Schema):
-    """ Marker interface for EmbedContent
+    """ Interface for EmbedContent
     """
 
     html_content = RichText(
@@ -34,4 +35,5 @@ class IEmbedContent(model.Schema):
         vocabulary=indexFileVocabulary,
         required=False,
     )
+
 

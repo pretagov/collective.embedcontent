@@ -28,6 +28,10 @@
       title="collective.embedcontent: Read EmbedContent"
   />
 
+  <browser:resourceDirectory
+  name="collective.embedcontent"
+  directory="static" />
+
 
   <browser:jbot
       directory="overrides"
@@ -41,6 +45,7 @@
         template="embedcontentview.pt"
         permission="zope2.View"
         />
+
 
    <browser:page
       for="collective.embedcontent.content.embedcontent.IEmbedContent"
@@ -92,6 +97,8 @@
     schema="collective.embedcontent.content.embedcontent.IEmbedContent"
     template="embedcontenttile.pt"
     />
+
+
 
  <adapter
         for="zope.annotation.interfaces.IAnnotatable
