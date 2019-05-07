@@ -16,10 +16,37 @@ from plone.namedfile.file import NamedBlobFile
 from plone.app.tiles import _ as _
 import zope.event
 import urllib
+from AccessControl.SecurityInfo import ClassSecurityInfo
+from plone.dexterity.browser import add
+from plone.dexterity.browser import edit
+from z3c.form import interfaces
+from zope.schema.vocabulary import SimpleTerm
+from zope.schema.vocabulary import SimpleVocabulary
 
 def embedContentPackageUrl(content):
     randomID = getattr(content, 'contentHash', None)
     return '%s/@@contents/%s/%s' % (content.absolute_url(), randomID, content.index_file)
+
+
+class EmbedContentAddForm(add.DefaultAddForm):
+    portal_type = 'EmbedContent'
+
+    def updateWidgets(self):
+        add.DefaultAddForm.updateWidgets(self)
+        self.widgets['index_file'].mode = interfaces.HIDDEN_MODE
+
+class EmbedContentAddView(add.DefaultAddView):
+    form = EmbedContentAddForm
+
+
+class EmbedContentEditForm(edit.DefaultEditForm):
+
+    def updateWidgets(self):
+        edit.DefaultEditForm.updateWidgets(self)
+        zipTree = getattr(self.context, 'zipTree', None)
+        top_level_files = [key for key in zipTree.iterkeys() if not isinstance(zipTree[key], OOBTree)]
+        terms = [SimpleTerm(value=pair[0], token=pair[0], title=pair[0]) for pair in top_level_files]
+        self.widgets['index_file'].field.vocabulary = SimpleVocabulary(terms)
 
 class EmbedContentView(DefaultView):
 
@@ -45,6 +72,8 @@ class EmbedContentContentView(BrowserView):
         """
     implements(IPublishTraverse)
 
+    security = ClassSecurityInfo()
+
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -54,6 +83,7 @@ class EmbedContentContentView(BrowserView):
         """ This view has no template yet for non-traversing requests """
         pass
 
+    security.declareProtected('collective.embedcontent.ReadEmbedContent', 'publishTraverse')
     def publishTraverse(self, request, name):
         path =  request.URL[len(self.context.absolute_url()):].split('/')
         zipTree = getattr(self.context,'zipTree', None)

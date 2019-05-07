@@ -7,16 +7,36 @@
 
   <!-- Set overrides folder for Just-a-Bunch-Of-Templates product -->
   <include package="z3c.jbot" file="meta.zcml" />
+    <include package="z3c.caching" file="meta.zcml" />
+  <include package="plone.app.caching" />
+  <include package="plone.app.mosaic" />
+
+
+
+    <permission
+        id="collective.embedcontent.AddEmbedContent"
+        title="collective.embedcontent: Add EmbedContent"
+    />
+
+   <permission
+      id="collective.embedcontent.EditEmbedContent"
+      title="collective.embedcontent: Edit EmbedContent"
+  />
+
+   <permission
+      id="collective.embedcontent.ReadEmbedContent"
+      title="collective.embedcontent: Read EmbedContent"
+  />
+
+
+
+
+
+
+
   <browser:jbot
       directory="overrides"
       layer="collective.embedcontent.interfaces.ICollectiveEmbedcontentLayer"
-      />
-
-  <!-- Publish static files -->
-  <plone:static
-      name="collective.embedcontent"
-      type="plone"
-      directory="static"
       />
 
   <browser:page
@@ -34,18 +54,17 @@
       permission="zope.Public"
       />
 
-  <include package="z3c.caching" file="meta.zcml" />
-  <include package="plone.app.caching" />
-  <include package="plone.app.mosaic" />
 
    <cache:ruleset
        for="collective.embedcontent.browser.embedcontent.PublishableString"
       ruleset="plone.stableResource"
       />
 
- <permission
-    id="collective.embedcontent.EditContent"
-    title="collective.embedcontent: Edit EmbedContent"
+
+
+<utility
+  component="collective.embedcontent.content.embedcontent.indexfile_factory"
+  name="Embed Content Index File Vocabulary"
 />
 
 <plone:tile
@@ -69,7 +88,7 @@
 
     <class class=".embedcontent.EmbedContentTileEdit">
         <require
-            permission="collective.embedcontent.EditContent"
+            permission="collective.embedcontent.EditEmbedContent"
             interface="zope.publisher.interfaces.browser.IBrowserPage"
             />
     </class>
@@ -84,9 +103,31 @@
 
     <class class=".embedcontent.EmbedContentTileDelete">
          <require
-            permission="collective.embedcontent.EditContent"
+            permission="collective.embedcontent.EditEmbedContent"
             interface="zope.publisher.interfaces.browser.IBrowserPage"
             />
     </class>
+
+    <adapter
+    for="Products.CMFCore.interfaces.IFolderish
+         zope.publisher.interfaces.browser.IDefaultBrowserLayer
+         plone.dexterity.interfaces.IDexterityFTI"
+    provides="zope.publisher.interfaces.browser.IBrowserPage"
+    factory=".embedcontent.EmbedContentAddView"
+    name="EmbedContent"
+    />
+<class class=".embedcontent.EmbedContentAddView">
+    <require
+        permission="collective.embedcontent.AddEmbedContent"
+        interface="zope.publisher.interfaces.browser.IBrowserPage"
+        />
+</class>
+
+<browser:page
+    for="collective.embedcontent.content.embedcontent.IEmbedContent"
+    name="edit"
+    class=".embedcontent.EmbedContentEditForm"
+    permission="collective.embedcontent.EditEmbedContent"
+    />
 
 </configure>

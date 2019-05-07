@@ -5,3 +5,4 @@ from Products.CMFCore.permissions import setDefaultRoles
 
 _ = MessageFactory('collective.embedcontent')
 setDefaultRoles('collective.embedcontent: Edit EmbedContent', ('Manager', 'Owner',))
+setDefaultRoles('collective.embedcontent: Read EmbedContent', ('Manager', 'Owner','Reader'))
