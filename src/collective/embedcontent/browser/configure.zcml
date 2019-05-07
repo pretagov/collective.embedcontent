@@ -61,12 +61,6 @@
       />
 
 
-
-<utility
-  component="collective.embedcontent.content.embedcontent.indexfile_factory"
-  name="Embed Content Index File Vocabulary"
-/>
-
 <plone:tile
     name="collective.embedcontent.tile"
     title="Embed Content"

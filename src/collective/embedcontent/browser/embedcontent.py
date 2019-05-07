@@ -41,12 +41,12 @@ class EmbedContentAddView(add.DefaultAddView):
 
 class EmbedContentEditForm(edit.DefaultEditForm):
 
-    def updateWidgets(self):
-        edit.DefaultEditForm.updateWidgets(self)
+    def updateFields(self):
+        edit.DefaultEditForm.updateFields(self)
         zipTree = getattr(self.context, 'zipTree', None)
         top_level_files = [key for key in zipTree.iterkeys() if not isinstance(zipTree[key], OOBTree)]
-        terms = [SimpleTerm(value=pair[0], token=pair[0], title=pair[0]) for pair in top_level_files]
-        self.widgets['index_file'].field.vocabulary = SimpleVocabulary(terms)
+        terms = [SimpleTerm(value=file, token=file, title=file) for file in top_level_files]
+        self.fields["index_file"].field.vocabulary = SimpleVocabulary(terms)
 
 class EmbedContentView(DefaultView):
 
