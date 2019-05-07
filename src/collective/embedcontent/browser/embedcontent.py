@@ -20,6 +20,7 @@ from zope.schema.vocabulary import SimpleTerm
 from zope.schema.vocabulary import SimpleVocabulary
 from plone.app.blob.field import BlobWrapper
 from zipfile import  ZipFile
+from plone.tiles import PersistentTile
 from plone.namedfile.utils import get_contenttype
 from .. import _
 import os
@@ -206,13 +207,6 @@ class EmbedContentTileEditForm(tileedit.DefaultEditForm):
     def handleCancel(self, action):
         tileedit.DefaultEditForm.handleCancel(self,action)
 
-    def extractData(self):
-        data, errors =  tileedit.DefaultEditForm.extractData(self)
-        # Remove blob from data as it is not supported by tile
-        if 'package_content' in data:
-            del data['package_content']
-        return (data,errors)
-
     def getContent(self):
         content = tileedit.DefaultEditForm.getContent(self)
         embed_content_id = '%s-%s-EmbedContent' % (self.tileType.__name__, self.tileId)
@@ -236,16 +230,12 @@ class EmbedContentTileDeleteForm(tiledelete.DefaultDeleteForm):
         if embed_content:
             parent = self.context.aq_parent
             parent.manage_delObjects(embed_content.id)
-        data, errors = tiledelete.DefaultDeleteForm.extractData(self)
-        # Remove blob from data as it is not supported by tile
-        if 'package_content' in data:
-            del data['package_content']
-        return (data, errors)
+        return tiledelete.DefaultDeleteForm.extractData(self)
 
 class EmbedContentTileDelete(tiledelete.DefaultDeleteView):
     form = EmbedContentTileDeleteForm
 
-class EmbedContentTile(Tile):
+class EmbedContentTile(PersistentTile):
     """ A tile for mosaic representing a embed content """
 
     @property
@@ -253,7 +243,7 @@ class EmbedContentTile(Tile):
         embed_content_id = '%s-%s-EmbedContent' % (self.__name__, self.id)
         embed_content = getattr(self.context, embed_content_id, None)
         fields = ['package_content','html_content','index_file']
-        content = {field: getattr(embed_content,field,None) for field in fields if getattr(embed_content,field, None)}
+        content = {field: getattr(embed_content,field,None) for field in fields}
         return content
 
     @property
