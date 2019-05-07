@@ -131,6 +131,7 @@ Adding tile with embed content
     >>> browser.getControl(name='form.button.Create').click()
     >>> import os
     >>> zip_file = os.path.join(os.path.dirname(__file__), "Plone.zip")
+    >>> browser.getControl(name='collective.embedcontent.tile.html_content').value = '<html><head></head><body>Test HTML Content</body></html>'
     >>> browser.getControl(name='collective.embedcontent.tile.package_content').add_file(open(zip_file), 'application/zip',  'Plone.zip')
     >>> browser.getControl('Save').click()
 

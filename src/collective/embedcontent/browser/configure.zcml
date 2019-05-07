@@ -29,11 +29,6 @@
   />
 
 
-
-
-
-
-
   <browser:jbot
       directory="overrides"
       layer="collective.embedcontent.interfaces.ICollectiveEmbedcontentLayer"
@@ -61,46 +56,6 @@
       />
 
 
-<plone:tile
-    name="collective.embedcontent.tile"
-    title="Embed Content"
-    description="Embed an iframe of static html into your page"
-    add_permission="cmf.ModifyPortalContent"
-    class="collective.embedcontent.browser.embedcontent.EmbedContentTile"
-    for="*"
-    permission="zope.Public"
-    schema="collective.embedcontent.content.embedcontent.IEmbedContent"
-    template="embedcontenttile.pt"
-    />
-
- <adapter
-        for="zope.publisher.interfaces.browser.IDefaultBrowserLayer
-             plone.tiles.interfaces.ITileType"
-        provides="plone.app.tiles.interfaces.ITileEditView"
-        factory=".embedcontent.EmbedContentTileEdit"
-        />
-
-    <class class=".embedcontent.EmbedContentTileEdit">
-        <require
-            permission="collective.embedcontent.EditEmbedContent"
-            interface="zope.publisher.interfaces.browser.IBrowserPage"
-            />
-    </class>
-
-
-  <adapter
-        for="zope.publisher.interfaces.browser.IDefaultBrowserLayer
-             plone.tiles.interfaces.ITileType"
-        provides="plone.app.tiles.interfaces.ITileDeleteView"
-        factory=".embedcontent.EmbedContentTileDelete"
-        />
-
-    <class class=".embedcontent.EmbedContentTileDelete">
-         <require
-            permission="collective.embedcontent.EditEmbedContent"
-            interface="zope.publisher.interfaces.browser.IBrowserPage"
-            />
-    </class>
 
     <adapter
     for="Products.CMFCore.interfaces.IFolderish
@@ -123,5 +78,51 @@
     class=".embedcontent.EmbedContentEditForm"
     permission="collective.embedcontent.EditEmbedContent"
     />
+
+
+
+    <plone:tile
+    name="collective.embedcontent.tile"
+    title="Embed Content"
+    description="Embed an iframe of static html into your page"
+    add_permission="cmf.ModifyPortalContent"
+    class="collective.embedcontent.browser.embedcontent.EmbedContentTile"
+    for="*"
+    permission="zope.Public"
+    schema="collective.embedcontent.content.embedcontent.IEmbedContent"
+    template="embedcontenttile.pt"
+    />
+
+ <adapter
+        for="zope.annotation.interfaces.IAnnotatable
+             zope.publisher.interfaces.browser.IDefaultBrowserLayer
+             plone.tiles.interfaces.ITileType"
+        provides="plone.app.tiles.interfaces.ITileEditView"
+        factory=".embedcontent.EmbedContentTileEdit"
+        />
+
+    <class class=".embedcontent.EmbedContentTileEdit">
+        <require
+            permission="collective.embedcontent.EditEmbedContent"
+            interface="zope.publisher.interfaces.browser.IBrowserPage"
+            />
+    </class>
+
+
+<adapter
+        for="zope.annotation.interfaces.IAnnotatable
+             zope.publisher.interfaces.browser.IDefaultBrowserLayer
+             plone.tiles.interfaces.ITileType"
+        provides="plone.app.tiles.interfaces.ITileDeleteView"
+        factory=".embedcontent.EmbedContentTileDelete"
+        />
+
+    <class class=".embedcontent.EmbedContentTileDelete">
+         <require
+            permission="collective.embedcontent.EditEmbedContent"
+            interface="zope.publisher.interfaces.browser.IBrowserPage"
+            />
+    </class>
+
 
 </configure>
