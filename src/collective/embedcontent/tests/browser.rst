@@ -38,6 +38,8 @@ Add a new EmbedContent with HTML content:
 
     >>> portal_url = portal.absolute_url()
     >>> browser.open(portal_url)
+    >>> 'Test HTML Content' in browser.contents
+    True
     >>> browser.getLink('EmbedContent').click()
     >>> browser.getControl('Title').value = 'testcontent1'
     >>> browser.getControl(name='form.widgets.html_content').value = '<html><head></head><body>Test HTML Content</body></html>'
@@ -59,13 +61,20 @@ Add a new EmbedContent with ZIP content:
     >>> browser.open(portal_url)
     >>> browser.url
     'http://nohost/plone'
+    >>> 'http://nohost/plone/testcontent2/@@contents/([-+]?[0-9]+)/pretagov.html' in browser.contents
+    True
     >>> browser.getLink('EmbedContent').click()
     >>> browser.getControl('Title').value = 'testcontent2'
     >>> import os
     >>> zip_file = os.path.join(os.path.dirname(__file__), "Plone.zip")
     >>> browser.getControl(name='form.widgets.package_content').add_file(open(zip_file), 'application/zip',  'Plone.zip')
-    >>> browser.getControl(name='form.widgets.index_file').value = 'Plone.html'
     >>> browser.getControl('Save').click()
+
+Index file is automatically updated
+
+    >>> content = portal['testcontent2']
+    >>> content.index_file =='Plone.html'
+    True
 
 ZIP content is display in browser
 
@@ -74,11 +83,17 @@ ZIP content is display in browser
 
 RandomID is included in the iframe source
 
+    >>> randomID1 = content.contentHash
     >>> import re
     >>> match = re.search("http://nohost/plone/testcontent2/@@contents/([-+]?[0-9]+)/Plone.html",browser.contents)
     >>> match != None
     True
-    >>> randomID1 = match.groups()[0]
+
+
+Index file listing with top level files
+    >>> browser.getLink('Edit').click()
+    >>> browser.getControl(name='form.widgets.index_file:list').options == ['Plone.html', 'yet_another.html']
+    True
 
 Replace ZIP content
 
@@ -86,9 +101,14 @@ Replace ZIP content
     >>> import os
     >>> zip_file = os.path.join(os.path.dirname(__file__), "pretagov.zip")
     >>> browser.getControl(name='form.widgets.package_content').add_file(open(zip_file), 'application/zip',  'pretagov.zip')
-    >>> browser.getControl(name='form.widgets.index_file').value = 'pretagov.html'
     >>> browser.getControl('Save').click()
     >>> 'PretaGov is an approved supplier' in browser.contents
+    True
+
+Index file is automatically updated
+
+    >>> content = portal['testcontent2']
+    >>> content.index_file =='pretagov.html'
     True
 
 RandomID is included in the iframe source
@@ -97,11 +117,28 @@ RandomID is included in the iframe source
     >>> match = re.search("http://nohost/plone/testcontent2/@@contents/([-+]?[0-9]+)/pretagov.html",browser.contents)
     >>> match != None
     True
-    >>> randomID2 = match.groups()[0]
+    >>> randomID2 = content.contentHash
 
 RandomID change
+
     >>> randomID1 != randomID2
     True
+
+Adding tile with embed content
+
+    >>> browser.open('{0}/@@add-tile'.format(portal_url))
+    >>> browser.getControl(name='tiletype').value = ['collective.embedcontent.tile']
+    >>> browser.getControl(name='form.button.Create').click()
+    >>> import os
+    >>> zip_file = os.path.join(os.path.dirname(__file__), "Plone.zip")
+    >>> browser.getControl(name='collective.embedcontent.tile.package_content').add_file(open(zip_file), 'application/zip',  'Plone.zip')
+    >>> browser.getControl('Save').click()
+
+ZIP content is display in tile
+
+    >>> 'The standard schema fields' in browser.contents
+    True
+
 
 
 Security testing
