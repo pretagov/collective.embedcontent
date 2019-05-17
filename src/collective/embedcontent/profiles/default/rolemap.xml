@@ -10,6 +10,22 @@
       <role name="Contributor"/>
     </permission>
 
+   <permission name="collective.embedcontent: Edit EmbedContent"
+                acquire="True">
+      <role name="Manager"/>
+      <role name="Site Administrator"/>
+      <role name="Owner"/>
+      <role name="Contributor"/>
+    </permission>
+
+    <permission name="collective.embedcontent: Read EmbedContent"
+                acquire="True">
+      <role name="Manager"/>
+      <role name="Site Administrator"/>
+      <role name="Owner"/>
+      <role name="Contributor"/>
+      <role name="Reader"/>
+    </permission>
 
   </permissions>
 </rolemap>

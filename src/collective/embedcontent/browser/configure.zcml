@@ -2,20 +2,40 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:cache="http://namespaces.zope.org/cache"
     i18n_domain="collective.embedcontent">
 
   <!-- Set overrides folder for Just-a-Bunch-Of-Templates product -->
   <include package="z3c.jbot" file="meta.zcml" />
+    <include package="z3c.caching" file="meta.zcml" />
+  <include package="plone.app.caching" />
+  <include package="plone.app.mosaic" />
+
+
+
+    <permission
+        id="collective.embedcontent.AddEmbedContent"
+        title="collective.embedcontent: Add EmbedContent"
+    />
+
+   <permission
+      id="collective.embedcontent.EditEmbedContent"
+      title="collective.embedcontent: Edit EmbedContent"
+  />
+
+   <permission
+      id="collective.embedcontent.ReadEmbedContent"
+      title="collective.embedcontent: Read EmbedContent"
+  />
+
+  <browser:resourceDirectory
+  name="collective.embedcontent"
+  directory="static" />
+
+
   <browser:jbot
       directory="overrides"
       layer="collective.embedcontent.interfaces.ICollectiveEmbedcontentLayer"
-      />
-
-  <!-- Publish static files -->
-  <plone:static
-      name="collective.embedcontent"
-      type="plone"
-      directory="static"
       />
 
   <browser:page
@@ -26,29 +46,105 @@
         permission="zope2.View"
         />
 
-  <browser:page
-    for="collective.embedcontent.content.embedcontent.IEmbedContent"
-    name="edit"
-    class="collective.embedcontent.browser.embedcontent.EmbedContentEditForm"
-    permission="cmf.ModifyPortalContent"
+
+   <browser:page
+      for="collective.embedcontent.content.embedcontent.IEmbedContent"
+      class="collective.embedcontent.browser.embedcontent.EmbedContentContentView"
+      name="contents"
+      permission="zope.Public"
+      />
+
+
+   <cache:ruleset
+       for="collective.embedcontent.browser.embedcontent.PublishableString"
+      ruleset="plone.stableResource"
+      />
+
+
+
+    <adapter
+    for="Products.CMFCore.interfaces.IFolderish
+         zope.publisher.interfaces.browser.IDefaultBrowserLayer
+         plone.dexterity.interfaces.IDexterityFTI"
+    provides="zope.publisher.interfaces.browser.IBrowserPage"
+    factory=".embedcontent.EmbedContentAddView"
+    name="EmbedContent"
     />
-
-   <adapter
-        for="Products.CMFCore.interfaces.IFolderish
-             plone.dexterity.interfaces.IDexterityFTI"
-        provides="zope.publisher.interfaces.browser.IBrowserPage"
-        factory="collective.embedcontent.browser.embedcontent.EmbedContentAddView"
-        name="EmbedContent"
-        />
-
-  <class class="collective.embedcontent.browser.embedcontent.EmbedContentAddView">
+<class class=".embedcontent.EmbedContentAddView">
     <require
-        permission="cmf.AddPortalContent"
+        permission="collective.embedcontent.AddEmbedContent"
         interface="zope.publisher.interfaces.browser.IBrowserPage"
         />
 </class>
 
+<browser:page
+    for="collective.embedcontent.content.embedcontent.IEmbedContent"
+    name="edit"
+    class=".embedcontent.EmbedContentEditForm"
+    permission="collective.embedcontent.EditEmbedContent"
+    />
 
+
+
+    <plone:tile
+    name="collective.embedcontent.tile"
+    title="Embed Content"
+    description="Embed an iframe of static html into your page"
+    add_permission="cmf.ModifyPortalContent"
+    class="collective.embedcontent.browser.embedcontent.EmbedContentTile"
+    for="*"
+    permission="zope.Public"
+    schema="collective.embedcontent.content.embedcontent.IEmbedContent"
+    template="embedcontenttile.pt"
+    />
+
+
+
+ <adapter
+        for="zope.annotation.interfaces.IAnnotatable
+             zope.publisher.interfaces.browser.IDefaultBrowserLayer
+             plone.tiles.interfaces.ITileType"
+        provides="plone.app.tiles.interfaces.ITileEditView"
+        factory=".embedcontent.EmbedContentTileEdit"
+        />
+
+    <class class=".embedcontent.EmbedContentTileEdit">
+        <require
+            permission="collective.embedcontent.EditEmbedContent"
+            interface="zope.publisher.interfaces.browser.IBrowserPage"
+            />
+    </class>
+
+    <adapter
+        for="zope.annotation.interfaces.IAnnotatable
+             zope.publisher.interfaces.browser.IDefaultBrowserLayer
+             plone.tiles.interfaces.ITileType"
+        provides="plone.app.tiles.interfaces.ITileAddView"
+        factory=".embedcontent.EmbedContentTileAdd"
+        />
+
+    <class class=".embedcontent.EmbedContentTileAdd">
+        <require
+            permission="collective.embedcontent.AddEmbedContent"
+            interface="zope.publisher.interfaces.browser.IBrowserPage"
+            />
+    </class>
+
+
+<adapter
+        for="zope.annotation.interfaces.IAnnotatable
+             zope.publisher.interfaces.browser.IDefaultBrowserLayer
+             plone.tiles.interfaces.ITileType"
+        provides="plone.app.tiles.interfaces.ITileDeleteView"
+        factory=".embedcontent.EmbedContentTileDelete"
+        />
+
+    <class class=".embedcontent.EmbedContentTileDelete">
+         <require
+            permission="collective.embedcontent.EditEmbedContent"
+            interface="zope.publisher.interfaces.browser.IBrowserPage"
+            />
+    </class>
 
 
 </configure>

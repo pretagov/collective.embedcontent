@@ -1,35 +1,39 @@
 # -*- coding: utf-8 -*-
-from plone.dexterity.content import Container
 from plone.supermodel import model
 from zope import schema
 from plone.namedfile.field import NamedBlobFile
 from plone.app.textfield import RichText
+from zope.schema.interfaces import IVocabularyFactory
+from zope.interface import provider
+from zope.schema.vocabulary import SimpleTerm
+from zope.schema.vocabulary import SimpleVocabulary
+from plone.tiles.directives import ignore_querystring
+
+items = [ ('index', u'Index HTML')]
+terms = [ SimpleTerm(value=pair[0], token=pair[0], title=pair[1]) for pair in items ]
+indexFileVocabulary = SimpleVocabulary(terms)
 
 class IEmbedContent(model.Schema):
-    """ Marker interface for EmbedContent
+    """ Interface for EmbedContent
     """
+
+    html_content = schema.SourceText(
+        title=(u'HTML Content'),
+        description=(u'HTML content'),
+        required=False,
+    )
+
     package_content = NamedBlobFile(
         title=(u'Package Content'),
         description=(u'Package content'),
         required=False,
     )
 
-
-    html_content = RichText(
-        title=(u'HTML Content'),
-        description=(u'HTML content'),
-        required=False,
-    )
-
-    package_signature = schema.Text(
-        title=(u'Package signature'),
-        description=(u'Hash value of package content'),
-        required=False,
-    )
-
-    index_file = schema.Text(
+    index_file = schema.Choice(
         title=(u'Index file'),
         description=(u'Index file in package content'),
-        default=(u'index.html'),
+        vocabulary=indexFileVocabulary,
         required=False,
     )
+
+

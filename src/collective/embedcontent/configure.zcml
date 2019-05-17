@@ -37,22 +37,6 @@
       post_handler=".setuphandlers.uninstall"
       />
 
-  <utility
-      factory=".setuphandlers.HiddenProfiles"
-      name="collective.embedcontent-hiddenprofiles"
-      />
-
-        <subscriber
-        for="collective.embedcontent.content.embedcontent.IEmbedContent zope.lifecycleevent.interfaces.IObjectAddedEvent"
-        handler=".events.afterContentCreated"
-        />
-
-
-    <subscriber
-        for="collective.embedcontent.content.embedcontent.IEmbedContent zope.lifecycleevent.interfaces.IObjectModifiedEvent"
-        handler=".events.afterContentModified"
-        />
-
   <!-- -*- extra stuff goes here -*- -->
 
 </configure>

@@ -1,0 +1,42 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      lang="en"
+         i18n:domain="collective.embedcontent">
+
+<head>
+    <link rel="stylesheet" type="text/css"
+             tal:define="navroot context/@@plone_portal_state/navigation_root_url"
+             tal:attributes="href string:${navroot}/++resource++collective.embedcontent/iframe.css"
+    />
+
+</head>
+
+
+<body tal:define="title context/Title|nothing"
+         i18n:domain="collective.embedcontent">
+
+
+<div class="tileItem clearfix">
+    <div class="tileBody">
+        <div tal:replace="structure view/context_content/html_content/output"  tal:condition="view/context_content/html_content"></div>
+        <div class="iframe-container"  tal:condition="view/context_content/package_content" >
+            <script type="text/javascript"
+             tal:define="navroot context/@@plone_portal_state/navigation_root_url"
+             tal:attributes="src string:${navroot}/++resource++collective.embedcontent/iframe.js"
+    ></script>
+            <iframe class="embed-content-frame"
+                    scrolling="no" tal:attributes="src view/package_url" tal:condition="view/context_content/package_content" />
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>
+
+
+
+
+

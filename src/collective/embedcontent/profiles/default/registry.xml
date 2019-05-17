@@ -1,5 +1,30 @@
 <?xml version="1.0"?>
 <registry>
-<!-- -*- extra stuff goes here -*- -->
+  <!-- -*- extra stuff goes here -*- -->
 
-</registry>
+
+  <record name="plone.app.tiles">
+    <field type="plone.registry.field.List">
+      <title>Tiles</title>
+      <value_type type="plone.registry.field.TextLine"/>
+    </field>
+    <value purge="false">
+    <element>collective.embedcontent.tile</element>
+    </value>
+  </record>
+
+  <records prefix="plone.app.mosaic.app_tiles.embedcontent"
+ interface="plone.app.mosaic.interfaces.ITile">
+ <value key="name">collective.embedcontent.tile</value>
+ <value key="label">Embed Content</value>
+ <value key="category">advanced</value>
+ <value key="tile_type">app</value>
+ <value key="default_value"></value>
+ <value key="read_only">false</value>
+ <value key="settings">true</value>
+ <value key="favorite">false</value>
+ <value key="rich_text">false</value>
+ <value key="weight">20</value>
+ </records>
+
+  </registry>
