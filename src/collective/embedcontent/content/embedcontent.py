@@ -9,7 +9,7 @@ from zope.schema.vocabulary import SimpleTerm
 from zope.schema.vocabulary import SimpleVocabulary
 from plone.tiles.directives import ignore_querystring
 
-items = [ ('index', u'Index HTML')]
+items = [ ('index.html', u'Index HTML')]
 terms = [ SimpleTerm(value=pair[0], token=pair[0], title=pair[1]) for pair in items ]
 indexFileVocabulary = SimpleVocabulary(terms)
 

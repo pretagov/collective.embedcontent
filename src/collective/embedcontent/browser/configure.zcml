@@ -65,7 +65,6 @@
     <adapter
     for="Products.CMFCore.interfaces.IFolderish
           collective.embedcontent.interfaces.ICollectiveEmbedcontentLayer
-         zope.publisher.interfaces.browser.IDefaultBrowserLayer
          plone.dexterity.interfaces.IDexterityFTI"
     provides="zope.publisher.interfaces.browser.IBrowserPage"
     factory=".embedcontent.EmbedContentAddView"
@@ -104,7 +103,6 @@
  <adapter
         for="zope.annotation.interfaces.IAnnotatable
               collective.embedcontent.interfaces.ICollectiveEmbedcontentLayer
-             zope.publisher.interfaces.browser.IDefaultBrowserLayer
              plone.tiles.interfaces.ITileType"
         provides="plone.app.tiles.interfaces.ITileEditView"
         factory=".embedcontent.EmbedContentTileEdit"
@@ -120,7 +118,6 @@
     <adapter
         for="zope.annotation.interfaces.IAnnotatable
               collective.embedcontent.interfaces.ICollectiveEmbedcontentLayer
-             zope.publisher.interfaces.browser.IDefaultBrowserLayer
              plone.tiles.interfaces.ITileType"
         provides="plone.app.tiles.interfaces.ITileAddView"
         factory=".embedcontent.EmbedContentTileAdd"
@@ -137,7 +134,6 @@
 <adapter
         for="zope.annotation.interfaces.IAnnotatable
             collective.embedcontent.interfaces.ICollectiveEmbedcontentLayer
-             zope.publisher.interfaces.browser.IDefaultBrowserLayer
              plone.tiles.interfaces.ITileType"
         provides="plone.app.tiles.interfaces.ITileDeleteView"
         factory=".embedcontent.EmbedContentTileDelete"
