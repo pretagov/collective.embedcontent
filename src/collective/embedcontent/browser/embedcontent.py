@@ -183,46 +183,39 @@ class EmbedContentContentView(BrowserView):
 
 class EmbedContentTileEditForm(tileedit.DefaultEditForm):
 
-    @button.buttonAndHandler(_('Save'), name='save')
-    def handleSave(self, action):
-        # Documentation https://pypi.org/project/plone.tiles/#overriding-transient-data-with-persistent
-        self.request.set('X-Tile-Persistent', 'yes')
-        embed_content_id = getEmbedContentIdInsideTile(self.tileType.__name__,self.tileId)
-        embed_content = getattr(self.context, embed_content_id, None)
-        if not embed_content:
-            embed_content = createContentInContainer(self.context, "EmbedContent", title=embed_content_id)
-            setattr(self.context, embed_content_id, embed_content)
-        embed_content.html_content = RichTextValue(self.request.get('%s.html_content' % self.tileType.__name__))
-        embed_content.index_file = self.request.get('%s.index_file' % self.tileType.__name__)
-        if self.request.get('%s.package_content' % self.tileType.__name__):
-            package_file = self.request.get('%s.package_content' % self.tileType.__name__)
-            package_file.seek(0)
-            filename = package_file.filename
-            contenttype = get_contenttype(filename=filename)
-            data = package_file.read()
-            embed_content.package_content = NamedBlobFile(data, contenttype, unicode(filename))
-        else:
-            action = self.request.get('%s.package_content.action' % self.tileType.__name__)
-            if action == 'remove':
-                embed_content.package_content = None
-        onContentUpdated(embed_content)
-        tileedit.DefaultEditForm.handleSave(self, action)
-
-    @button.buttonAndHandler(_(u'Cancel'), name='cancel')
-    def handleCancel(self, action):
-        tileedit.DefaultEditForm.handleCancel(self,action)
-
     def getContent(self):
         content = tileedit.DefaultEditForm.getContent(self)
         embed_content_id = getEmbedContentIdInsideTile(self.tileType.__name__, self.tileId)
         embed_content = getattr(self.context, embed_content_id, None)
         if embed_content:
             content['package_content'] = embed_content.package_content
-            content['html_content'] = embed_content.html_content
+            content['html_content'] = embed_content.html_content.raw if embed_content.html_content else ''
             content['index_file'] = embed_content.index_file
         return content
 
     def extractData(self):
+        # Documentation https://pypi.org/project/plone.tiles/#overriding-transient-data-with-persistent
+        self.request.set('X-Tile-Persistent', 'yes')
+        if 'buttons.save' in self.request.form:
+            embed_content_id = getEmbedContentIdInsideTile(self.tileType.__name__, self.tileId)
+            embed_content = getattr(self.context, embed_content_id, None)
+            if not embed_content:
+                embed_content = createContentInContainer(self.context, "EmbedContent", title=embed_content_id)
+                setattr(self.context, embed_content_id, embed_content)
+            embed_content.html_content = RichTextValue(self.request.get('%s.html_content' % self.tileType.__name__))
+            embed_content.index_file = self.request.get('%s.index_file' % self.tileType.__name__)
+            if self.request.get('%s.package_content' % self.tileType.__name__):
+                package_file = self.request.get('%s.package_content' % self.tileType.__name__)
+                package_file.seek(0)
+                filename = package_file.filename
+                contenttype = get_contenttype(filename=filename)
+                data = package_file.read()
+                embed_content.package_content = NamedBlobFile(data, contenttype, unicode(filename))
+            else:
+                action = self.request.get('%s.package_content.action' % self.tileType.__name__)
+                if action == 'remove':
+                    embed_content.package_content = None
+            onContentUpdated(embed_content)
         data, errors = tileedit.DefaultEditForm.extractData(self)
         # Remove blob from data as it is not supported by tile
         if 'package_content' in data:
@@ -246,24 +239,9 @@ class EmbedContentTileEdit(tileedit.DefaultEditView):
 
 class EmbedContentTileAddForm(tileadd.DefaultAddForm):
 
-    @button.buttonAndHandler(_('Save'), name='save')
-    def handleAdd(self, action):
-        # Documentation https://pypi.org/project/plone.tiles/#overriding-transient-data-with-persistent
+    def extractData(self):
         self.request.set('X-Tile-Persistent', 'yes')
-        tileadd.DefaultAddForm.handleAdd(self, action)
-
-
-    @button.buttonAndHandler(_(u'Cancel'), name='cancel')
-    def handleCancel(self, action):
-        tileadd.DefaultAddForm.handleCancel(self, action)
-
-    @property
-    def context_content(self):
-        content = {}
-        content['package_content'] = None
-        content['html_content'] = None
-        content['index_file'] = None
-        return content
+        return tileadd.DefaultAddForm.extractData(self)
 
 
 class EmbedContentTileAdd(tileadd.DefaultAddView):
@@ -272,17 +250,9 @@ class EmbedContentTileAdd(tileadd.DefaultAddView):
 
 class EmbedContentTileDeleteForm(tiledelete.DefaultDeleteForm):
 
-    @button.buttonAndHandler(_('Delete'), name='delete')
-    def handleDelete(self, action):
+    def extractData(self):
         # Documentation https://pypi.org/project/plone.tiles/#overriding-transient-data-with-persistent
         self.request.set('X-Tile-Persistent', 'yes')
-        tiledelete.DefaultDeleteForm.handleDelete(self, action)
-
-    @button.buttonAndHandler(_(u'Cancel'), name='cancel')
-    def handleCancel(self, action):
-        tiledelete.DefaultDeleteForm.handleCancel(self, action)
-
-    def extractData(self):
         embed_content_id = '%s-%s-EmbedContent' % (self.tileType.__name__, self.tileId)
         embed_content = getattr(self.context, embed_content_id, None)
         if embed_content:
@@ -304,10 +274,11 @@ class EmbedContentTile(Tile):
     def context_content(self):
         embed_content_id = getEmbedContentIdInsideTile(self.__name__, self.id)
         embed_content = getattr(self.context, embed_content_id, None)
-        content = {}
-        content['package_content'] = embed_content.package_content or None
-        content['html_content'] = embed_content.html_content or None
-        content['index_file'] = embed_content.index_file or None
+        content = {'package_content':None,'html_content':None,'index_file':None}
+        if embed_content:
+            content['package_content'] = embed_content.package_content
+            content['html_content'] = embed_content.html_content
+            content['index_file'] = embed_content.index_file
         return content
 
     @property

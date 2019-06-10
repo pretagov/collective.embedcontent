@@ -24,8 +24,7 @@
         <div class="iframe-container"  tal:condition="view/context_content/package_content" >
             <script type="text/javascript"
              tal:define="navroot context/@@plone_portal_state/navigation_root_url"
-             tal:attributes="src string:${navroot}/++resource++collective.embedcontent/iframe.js"
-    ></script>
+             tal:attributes="src string:${navroot}/++resource++collective.embedcontent/iframe.js"></script>
             <iframe class="embed-content-frame"
                     scrolling="no" tal:attributes="src view/package_url" tal:condition="view/context_content/package_content" />
         </div>
