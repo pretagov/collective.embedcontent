@@ -27,6 +27,11 @@ from plone.namedfile.utils import get_contenttype
 from .. import _
 import os
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+from collective.embedcontent.interfaces import ICollectiveEmbedcontentLayer
+from zope.interface import implements
+from zope.interface import implementer
+
+from collective.embedcontent.content.embedcontent import IEmbedContent
 
 def generateUniqueIDForPackageFile(fileObj):
     return str(hash(fileObj))
@@ -52,6 +57,8 @@ def guessIndexFile(content):
             content.index_file = html_files[0]
         elif top_level_files:
             content.index_file = top_level_files[0]
+        else:
+            content.index_file = None
 
 def extractPackageContent(treeRoot, zip_blob):
     """
@@ -96,9 +103,6 @@ def onContentUpdated(obj):
         setattr(obj, 'zipTree', OOBTree())
     guessIndexFile(obj)
 
-def getEmbedContentIdInsideTile(tileType, tileId):
-    return '%s-%s-EmbedContent' % (tileType, tileId)
-
 
 class EmbedContentAddForm(dexterityadd.DefaultAddForm):
     portal_type = 'EmbedContent'
@@ -109,13 +113,7 @@ class EmbedContentAddForm(dexterityadd.DefaultAddForm):
 
     def createAndAdd(self, data):
         obj = dexterityadd.DefaultAddForm.createAndAdd(self,data)
-        if obj.package_content:
-            content_hash = generateUniqueIDForPackageFile(obj.package_content)
-            setattr(obj, 'contentHash', content_hash)
-            zipTree = OOBTree()
-            extractPackageContent(zipTree, obj.package_content)
-            setattr(obj, 'zipTree', zipTree)
-            guessIndexFile(obj)
+        onContentUpdated(obj)
         return obj
 
 class EmbedContentAddView(dexterityadd.DefaultAddView):
@@ -183,108 +181,9 @@ class EmbedContentContentView(BrowserView):
         return PublishableString(zipTree)
 
 
-class EmbedContentTileEditForm(tileedit.DefaultEditForm):
-
-    @button.buttonAndHandler(_('Save'), name='save')
-    def handleSave(self, action):
-        # Documentation https://pypi.org/project/plone.tiles/#overriding-transient-data-with-persistent
-        self.request.set('X-Tile-Persistent', 'yes')
-        embed_content_id = getEmbedContentIdInsideTile(self.tileType.__name__,self.tileId)
-        embed_content = getattr(self.context, embed_content_id, None)
-        if not embed_content:
-            embed_content = createContentInContainer(self.context, "EmbedContent", title=embed_content_id)
-            setattr(self.context, embed_content_id, embed_content)
-        embed_content.html_content = RichTextValue(self.request.get('%s.html_content' % self.tileType.__name__))
-        embed_content.index_file = self.request.get('%s.index_file' % self.tileType.__name__)
-        if self.request.get('%s.package_content' % self.tileType.__name__):
-            package_file = self.request.get('%s.package_content' % self.tileType.__name__)
-            package_file.seek(0)
-            filename = package_file.filename
-            contenttype = get_contenttype(filename=filename)
-            data = package_file.read()
-            embed_content.package_content = NamedBlobFile(data, contenttype, unicode(filename))
-        else:
-            action = self.request.get('%s.package_content.action' % self.tileType.__name__)
-            if action == 'remove':
-                embed_content.package_content = None
-        onContentUpdated(embed_content)
-        tileedit.DefaultEditForm.handleSave(self, action)
-
-    @button.buttonAndHandler(_(u'Cancel'), name='cancel')
-    def handleCancel(self, action):
-        tileedit.DefaultEditForm.handleCancel(self,action)
-
-    def getContent(self):
-        content = tileedit.DefaultEditForm.getContent(self)
-        embed_content_id = getEmbedContentIdInsideTile(self.tileType.__name__, self.tileId)
-        embed_content = getattr(self.context, embed_content_id, None)
-        if embed_content:
-            content['package_content'] = embed_content.package_content
-            content['html_content'] = embed_content.html_content
-            content['index_file'] = embed_content.index_file
-        return content
-
-    def extractData(self):
-        data, errors = tileedit.DefaultEditForm.extractData(self)
-        # Remove blob from data as it is not supported by tile
-        if 'package_content' in data:
-            del data['package_content']
-        return (data, errors)
-
-class EmbedContentTileEdit(tileedit.DefaultEditView):
-    form = EmbedContentTileEditForm
-
-
-class EmbedContentTileAddForm(tileadd.DefaultAddForm):
-
-    @button.buttonAndHandler(_('Save'), name='save')
-    def handleAdd(self, action):
-        # Documentation https://pypi.org/project/plone.tiles/#overriding-transient-data-with-persistent
-        self.request.set('X-Tile-Persistent', 'yes')
-        tileadd.DefaultAddForm.handleAdd(self, action)
-
-    @button.buttonAndHandler(_(u'Cancel'), name='cancel')
-    def handleCancel(self, action):
-        tileadd.DefaultAddForm.handleCancel(self, action)
-
-
-class EmbedContentTileAdd(tileadd.DefaultAddView):
-    form = EmbedContentTileAddForm
-
-class EmbedContentTileDeleteForm(tiledelete.DefaultDeleteForm):
-
-    def extractData(self):
-        embed_content_id = '%s-%s-EmbedContent' % (self.tileType.__name__, self.tileId)
-        embed_content = getattr(self.context, embed_content_id, None)
-        if embed_content:
-            parent = self.context.aq_parent
-            parent.manage_delObjects(embed_content.id)
-        data, errors = tiledelete.DefaultDeleteForm.extractData(self)
-        # Remove blob from data as it is not supported by tile
-        if 'package_content' in data:
-            del data['package_content']
-        return (data, errors)
-
-class EmbedContentTileDelete(tiledelete.DefaultDeleteView):
-    form = EmbedContentTileDeleteForm
-
 class EmbedContentTile(Tile):
     """ A tile for mosaic representing a embed content """
 
     @property
     def context_content(self):
-        embed_content_id = getEmbedContentIdInsideTile(self.__name__, self.id)
-        embed_content = getattr(self.context, embed_content_id, None)
-        fields = ['package_content','html_content','index_file']
-        content = {field: getattr(embed_content,field,None) for field in fields}
-        return content
-
-    @property
-    def package_url(self):
-        embed_content_id = '%s-%s-EmbedContent' % (self.__name__, self.id)
-        embed_content = getattr(self.context, embed_content_id, None)
-        return getEmbedContentPackageUrl(embed_content)
-
-    @property
-    def url(self):
-        return '%s/@@%s/%s' % (self.context.portal_url(),self.__name__, self.id)
+        return self.data

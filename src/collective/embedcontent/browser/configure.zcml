@@ -65,7 +65,6 @@
     <adapter
     for="Products.CMFCore.interfaces.IFolderish
           collective.embedcontent.interfaces.ICollectiveEmbedcontentLayer
-         zope.publisher.interfaces.browser.IDefaultBrowserLayer
          plone.dexterity.interfaces.IDexterityFTI"
     provides="zope.publisher.interfaces.browser.IBrowserPage"
     factory=".embedcontent.EmbedContentAddView"
@@ -90,65 +89,15 @@
     <plone:tile
     name="collective.embedcontent.tile"
     title="Embed Content"
-    description="Embed an iframe of static html into your page"
+    description="Paste html content OR upload a zip file of html content which will appear inside a dynamically resized area of your tile."
     add_permission="cmf.ModifyPortalContent"
     class="collective.embedcontent.browser.embedcontent.EmbedContentTile"
     for="*"
     permission="zope.Public"
-    schema="collective.embedcontent.content.embedcontent.IEmbedContent"
+    schema="collective.embedcontent.content.embedcontent.IEmbedContentTile"
     template="embedcontenttile.pt"
     />
 
-
-
- <adapter
-        for="zope.annotation.interfaces.IAnnotatable
-              collective.embedcontent.interfaces.ICollectiveEmbedcontentLayer
-             zope.publisher.interfaces.browser.IDefaultBrowserLayer
-             plone.tiles.interfaces.ITileType"
-        provides="plone.app.tiles.interfaces.ITileEditView"
-        factory=".embedcontent.EmbedContentTileEdit"
-        />
-
-    <class class=".embedcontent.EmbedContentTileEdit">
-        <require
-            permission="collective.embedcontent.EditEmbedContent"
-            interface="zope.publisher.interfaces.browser.IBrowserPage"
-            />
-    </class>
-
-    <adapter
-        for="zope.annotation.interfaces.IAnnotatable
-              collective.embedcontent.interfaces.ICollectiveEmbedcontentLayer
-             zope.publisher.interfaces.browser.IDefaultBrowserLayer
-             plone.tiles.interfaces.ITileType"
-        provides="plone.app.tiles.interfaces.ITileAddView"
-        factory=".embedcontent.EmbedContentTileAdd"
-        />
-
-    <class class=".embedcontent.EmbedContentTileAdd">
-        <require
-            permission="collective.embedcontent.AddEmbedContent"
-            interface="zope.publisher.interfaces.browser.IBrowserPage"
-            />
-    </class>
-
-
-<adapter
-        for="zope.annotation.interfaces.IAnnotatable
-            collective.embedcontent.interfaces.ICollectiveEmbedcontentLayer
-             zope.publisher.interfaces.browser.IDefaultBrowserLayer
-             plone.tiles.interfaces.ITileType"
-        provides="plone.app.tiles.interfaces.ITileDeleteView"
-        factory=".embedcontent.EmbedContentTileDelete"
-        />
-
-    <class class=".embedcontent.EmbedContentTileDelete">
-         <require
-            permission="collective.embedcontent.EditEmbedContent"
-            interface="zope.publisher.interfaces.browser.IBrowserPage"
-            />
-    </class>
 
 
 </configure>

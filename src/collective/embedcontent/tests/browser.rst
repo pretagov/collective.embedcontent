@@ -124,22 +124,6 @@ RandomID change
     >>> randomID1 != randomID2
     True
 
-Adding tile with embed content
-
-    >>> browser.open('{0}/@@add-tile'.format(portal_url))
-    >>> browser.getControl(name='tiletype').value = ['collective.embedcontent.tile']
-    >>> browser.getControl(name='form.button.Create').click()
-    >>> import os
-    >>> zip_file = os.path.join(os.path.dirname(__file__), "Plone.zip")
-    >>> browser.getControl(name='collective.embedcontent.tile.html_content').value = '<html><head></head><body>Test HTML Content</body></html>'
-    >>> browser.getControl(name='collective.embedcontent.tile.package_content').add_file(open(zip_file), 'application/zip',  'Plone.zip')
-    >>> browser.getControl('Save').click()
-
-ZIP content is display in tile
-
-    >>> 'The standard schema fields' in browser.contents
-    True
-
 
 
 Security testing
