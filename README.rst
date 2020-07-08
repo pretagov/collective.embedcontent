@@ -30,7 +30,7 @@ Examples
 --------
 
 This add-on can be seen in action at the following sites:
-- https://www.mhcs.health.nsw.gov.au
+- https://www.mhcs.health.nsw.gov.au (frontpage twitter and facebook tiles and under Media > Newsletters)
 
 
 
