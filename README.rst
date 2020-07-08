@@ -6,13 +6,13 @@
 collective.embedcontent
 =======================
 
-Collective.embed provides a way to install a zip or single html file of content into a plone site. 
+Collective.embedcontent provides a way to install a zip or single html file of content into a plone site. 
 
 Features
 --------
 
 - Content is displayed inside an iframe in a content view or in a mosaic tile.
-
+- The iframe will dymaically resize vertically to fit the loaded content to avoid scroll bars.
 - Content is not filtered like pasted html in the visual editor. This allows for
   - subsites authored by other tools such newsletter software. Linked html works but need to be relative.
   - social media JS embed codes
