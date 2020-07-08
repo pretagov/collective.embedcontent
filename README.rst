@@ -12,8 +12,9 @@ Features
 --------
 
 - Content is displayed inside an iframe in a content view or in a mosaic tile.
-- The iframe will dymaically resize vertically to fit the loaded content to avoid scroll bars.
-- Content is not filtered like pasted html in the visual editor. This allows for
+- The iframe will dynamically resize vertically to fit the loaded content to avoid scroll bars.
+- Content is not filtered like pasted html in the visual editor. This allows for:
+
   - subsites authored by other tools such newsletter software. Linked html works but need to be relative.
   - social media JS embed codes
 
@@ -30,6 +31,7 @@ Examples
 --------
 
 This add-on can be seen in action at the following sites:
+
 - https://www.mhcs.health.nsw.gov.au (frontpage twitter and facebook tiles and under Media > Newsletters)
 
 
