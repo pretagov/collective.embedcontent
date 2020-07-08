@@ -14,15 +14,17 @@ long_description = '\n\n'.join([
 
 setup(
     name='collective.embedcontent',
-    version='1.0a1',
-    description="An add-on for Plone",
+    version='1.0a2',
+    description="Content type and mosaic tile to display pasted html or a zip of embedded html content",
     long_description=long_description,
     # Get more from https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
         "Environment :: Web Environment",
         "Framework :: Plone",
         "Framework :: Plone :: Addon",
+        "Framework :: Plone :: 5.0",
         "Framework :: Plone :: 5.1",
+        "Framework :: Plone :: 5.2",
         "Programming Language :: Python",
         "Programming Language :: Python :: 2.7",
         "Operating System :: OS Independent",
@@ -30,7 +32,7 @@ setup(
     ],
     keywords='Python Plone',
     author='quang.nguyen',
-    author_email='quang@pretagov.com',
+    author_email='software@pretagov.com',
     url='https://pypi.python.org/pypi/collective.embedcontent',
     license='GPL version 2',
     packages=find_packages('src', exclude=['ez_setup']),

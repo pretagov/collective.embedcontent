@@ -1,4 +1,5 @@
 Contributors
 ============
 
-- quang.nguyen, quang@pretagov.com
+- quang.nguyen, software@pretagov.com
+- dylan.jay, software@pretagov.com
