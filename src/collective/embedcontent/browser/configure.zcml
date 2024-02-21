@@ -9,7 +9,7 @@
   <include package="z3c.jbot" file="meta.zcml" />
     <include package="z3c.caching" file="meta.zcml" />
   <include package="plone.app.caching" />
-  <include package="plone.app.mosaic" />
+  <!-- <include package="plone.app.mosaic" /> -->
 
 
 
@@ -86,7 +86,7 @@
 
 
 
-    <plone:tile
+    <!-- <plone:tile
     name="collective.embedcontent.tile"
     title="Embed Content"
     description="Paste html content OR upload a zip file of html content which will appear inside a dynamically resized area of your tile."
@@ -96,7 +96,7 @@
     permission="zope.Public"
     schema="collective.embedcontent.content.embedcontent.IEmbedContentTile"
     template="embedcontenttile.pt"
-    />
+    /> -->
 
 
 

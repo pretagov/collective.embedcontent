@@ -3,7 +3,7 @@
   <!-- -*- extra stuff goes here -*- -->
 
 
-  <record name="plone.app.tiles">
+  <!-- <record name="plone.app.tiles">
     <field type="plone.registry.field.List">
       <title>Tiles</title>
       <value_type type="plone.registry.field.TextLine"/>
@@ -11,9 +11,9 @@
     <value purge="false">
     <element>collective.embedcontent.tile</element>
     </value>
-  </record>
+  </record> -->
 
-  <records prefix="plone.app.mosaic.app_tiles.embedcontent"
+  <!-- <records prefix="plone.app.mosaic.app_tiles.embedcontent"
  interface="plone.app.mosaic.interfaces.ITile">
  <value key="name">collective.embedcontent.tile</value>
  <value key="label">Embed Content</value>
@@ -25,6 +25,6 @@
  <value key="favorite">false</value>
  <value key="rich_text">false</value>
  <value key="weight">20</value>
- </records>
+ </records> -->
 
   </registry>

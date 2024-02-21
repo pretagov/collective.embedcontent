@@ -44,10 +44,11 @@ setup(
     install_requires=[
         'setuptools',
         # -*- Extra requirements: -*-
-        'z3c.jbot',
+        # 'z3c.jbot',
         'plone.api',
-        'plone.app.blob',
-        'plone.restapi',
+        # 'plone.app.blob',
+        'plone.namedfile',
+        # 'plone.restapi',
         'plone.app.dexterity',
     ],
     extras_require={

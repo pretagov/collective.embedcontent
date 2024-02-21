@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 from plone.dexterity.browser.view import DefaultView
-from zope.interface import implements, Interface
+from zope.interface import implementer, Interface
 from zope.publisher.interfaces import IPublishTraverse
 from Products.Five import BrowserView
 from BTrees.OOBTree import OOBTree
 from z3c.form import form, button
-from plone.tiles.tile import Tile
-from plone.app.tiles.browser import add as tileadd
-from plone.app.tiles.browser import edit as tileedit
-from plone.app.tiles.browser import delete as tiledelete
+# from plone.tiles.tile import Tile
+# from plone.app.tiles.browser import add as tileadd
+# from plone.app.tiles.browser import edit as tileedit
+# from plone.app.tiles.browser import delete as tiledelete
 from plone.dexterity.browser import add as dexterityadd
 from plone.dexterity.browser import edit as dexterityedit
 from plone.dexterity.utils import createContentInContainer
@@ -19,9 +19,9 @@ from AccessControl.SecurityInfo import ClassSecurityInfo
 from z3c.form import interfaces
 from zope.schema.vocabulary import SimpleTerm
 from zope.schema.vocabulary import SimpleVocabulary
-from plone.app.blob.field import BlobWrapper
+# from plone.app.blob.field import BlobWrapper
 from zipfile import  ZipFile
-from plone.tiles import PersistentTile
+# from plone.tiles import PersistentTile
 from zope.browser.interfaces import IBrowserView
 from plone.namedfile.utils import get_contenttype
 from .. import _
@@ -30,6 +30,9 @@ from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from collective.embedcontent.interfaces import ICollectiveEmbedcontentLayer
 from zope.interface import implements
 from zope.interface import implementer
+
+from plone.namedfile import NamedBlobFile
+
 
 from collective.embedcontent.content.embedcontent import IEmbedContent
 
@@ -81,11 +84,12 @@ def extractPackageContent(treeRoot, zip_blob):
             parent_folder_name = '/'.join(path.split(os.sep)[:-1])
             parent = parent_dict[parent_folder_name] if parent_folder_name in parent_dict else treeRoot
             data = zipfile.read(path)
-            blob = BlobWrapper(get_contenttype(filename=filename))
-            file_obj = blob.getBlob().open('w')
-            file_obj.write(data)
-            file_obj.close()
-            blob.setFilename(filename)
+            # blob = BlobWrapper(get_contenttype(filename=filename))
+            blob = NamedBlobFile(data, filename=filename)
+            # file_obj = blob.getBlob().open('w')
+            # file_obj.write(data)
+            # file_obj.close()
+            # blob.setFilename(filename)
             parent.insert(filename, blob)
 
 def onContentUpdated(obj):
@@ -148,10 +152,11 @@ class PublishableString(str):
 
 
 
+@implementer(IPublishTraverse)
 class EmbedContentContentView(BrowserView):
     """ @@contents browser view to access zipfile's contents
         """
-    implements(IPublishTraverse)
+    # implements(IPublishTraverse)
 
     index = ViewPageTemplateFile("embedcontentview.pt")
 
@@ -181,9 +186,9 @@ class EmbedContentContentView(BrowserView):
         return PublishableString(zipTree)
 
 
-class EmbedContentTile(Tile):
-    """ A tile for mosaic representing a embed content """
+# class EmbedContentTile(Tile):
+#     """ A tile for mosaic representing a embed content """
 
-    @property
-    def context_content(self):
-        return self.data
+#     @property
+#     def context_content(self):
+#         return self.data
