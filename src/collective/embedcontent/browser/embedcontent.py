@@ -174,7 +174,7 @@ class EmbedContentContentView(BrowserView):
         if isinstance(zipTree, OOBTree):
             return self
         request.RESPONSE.setHeader('content-type', zipTree.contentType)
-        return PublishableString(zipTree)
+        return zipTree.data
 
 
 # class EmbedContentTile(Tile):
