@@ -1,40 +1,30 @@
 # -*- coding: utf-8 -*-
-from plone.dexterity.browser.view import DefaultView
-from zope.interface import implementer, Interface
-from zope.publisher.interfaces import IPublishTraverse
-from Products.Five import BrowserView
+# from plone.tiles import PersistentTile
+import os
+from urllib.parse import unquote
+
+# from plone.app.blob.field import BlobWrapper
+from zipfile import ZipFile
+
+from AccessControl.SecurityInfo import ClassSecurityInfo
 from BTrees.OOBTree import OOBTree
-from z3c.form import form, button
+
 # from plone.tiles.tile import Tile
 # from plone.app.tiles.browser import add as tileadd
 # from plone.app.tiles.browser import edit as tileedit
 # from plone.app.tiles.browser import delete as tiledelete
 from plone.dexterity.browser import add as dexterityadd
 from plone.dexterity.browser import edit as dexterityedit
-from plone.dexterity.utils import createContentInContainer
-from plone.app.textfield.value import RichTextValue
-from plone.namedfile.file import NamedBlobFile
-import urllib
-from AccessControl.SecurityInfo import ClassSecurityInfo
-from z3c.form import interfaces
-from zope.schema.vocabulary import SimpleTerm
-from zope.schema.vocabulary import SimpleVocabulary
-# from plone.app.blob.field import BlobWrapper
-from zipfile import  ZipFile
-# from plone.tiles import PersistentTile
-from zope.browser.interfaces import IBrowserView
-from plone.namedfile.utils import get_contenttype
-from .. import _
-import os
-from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
-from collective.embedcontent.interfaces import ICollectiveEmbedcontentLayer
-from zope.interface import implements
-from zope.interface import implementer
-
+from plone.dexterity.browser.view import DefaultView
 from plone.namedfile import NamedBlobFile
+from plone.namedfile.file import NamedBlobFile
+from Products.Five import BrowserView
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+from z3c.form import interfaces
+from zope.interface import implementer
+from zope.publisher.interfaces import IPublishTraverse
+from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
 
-
-from collective.embedcontent.content.embedcontent import IEmbedContent
 
 def generateUniqueIDForPackageFile(fileObj):
     return str(hash(fileObj))
@@ -177,12 +167,13 @@ class EmbedContentContentView(BrowserView):
         zipTree = getattr(self.context,'zipTree', None)
         for element in path[3:]:
             try:
-                zipTree = zipTree[urllib.unquote(element)]
+                zipTree = zipTree[unquote(element)]
+            # TODO: more specific exception, maybe TypeError?. This is way too broad and makes it hard to know when there's actually a problem
             except Exception:
                 return None
         if isinstance(zipTree, OOBTree):
             return self
-        request.RESPONSE.setHeader('content-type', zipTree.content_type)
+        request.RESPONSE.setHeader('content-type', zipTree.contentType)
         return PublishableString(zipTree)
 
 
